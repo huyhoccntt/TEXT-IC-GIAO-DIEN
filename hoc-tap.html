@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Học tập | Trợ Lý Học Đường</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="auth.js"></script>
+  <script src="data_toan10.js"></script>
+  <script src="data_toan11.js"></script>
+  <script src="data_toan12.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0a0f2c; }
+    .page { display: flex; flex-direction: column; min-height: 100vh; }
+    
+    .header { background-color: #182b47; border-bottom: 1px solid #1e3a5f; position: sticky; top: 0; z-index: 100; }
+    .header-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.35rem; text-decoration: none; color: white; }
+    .brand-mark { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.4rem; }
+    .user-menu { display: flex; align-items: center; gap: 20px; }
+    .avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 40px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; background-size: cover; background-position: center; }
+    .logout-btn { background: none; border: none; color: #e0f2fe; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
+    .logout-btn:hover { color: #ef4444; }
+    
+    .learning-container { max-width: 1280px; margin: 0 auto; padding: 32px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px; color: #2563eb; text-decoration: none; font-weight: 500; }
+    .subject-header { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 32px; padding: 32px; color: white; margin-bottom: 32px; }
+    .subject-header h1 { font-size: 2rem; margin-bottom: 12px; }
+    .theory-section { margin-bottom: 48px; }
+    .theory-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .theory-header h2 { font-size: 1.6rem; color: #0f172a; }
+    .topic-count { background: #eef2ff; padding: 6px 16px; border-radius: 40px; font-size: 0.85rem; font-weight: 600; color: #2563eb; }
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+    .topic-card { background: white; border-radius: 24px; border: 1px solid #eef2f6; overflow: hidden; transition: all 0.3s; }
+    .topic-card:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1); }
+    .topic-header { background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 20px; border-bottom: 1px solid #eef2f6; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .topic-header h3 { font-size: 1rem; color: #0f172a; }
+    .topic-badge { background: #eef2ff; color: #2563eb; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .topic-content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .topic-content.open { max-height: 800px; padding: 20px; }
+    .theory-text { background: #f8fafc; padding: 20px; border-radius: 16px; font-size: 0.85rem; line-height: 1.7; white-space: pre-line; }
+    .expand-icon { font-size: 1.2rem; transition: transform 0.3s; }
+    .topic-header.open .expand-icon { transform: rotate(180deg); }
+    
+    .exam-section { background: white; border-radius: 32px; border: 1px solid #eef2f6; overflow: hidden; margin-top: 48px; margin-bottom: 48px; }
+    .exam-header { background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 28px 32px; color: white; }
+    .exam-header h2 { font-size: 1.6rem; margin-bottom: 8px; }
+    .exam-body { padding: 32px; }
+    .quiz-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .quiz-stats { background: #eef2ff; padding: 8px 20px; border-radius: 40px; font-weight: 600; color: #2563eb; }
+    .timer-display { background: #fef3c7; padding: 8px 20px; border-radius: 40px; font-weight: 600; color: #b45309; font-family: monospace; font-size: 1.1rem; }
+    .start-quiz-btn, .submit-quiz-btn { background: #2563eb; color: white; border: none; padding: 12px 32px; border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+    .start-quiz-btn:hover, .submit-quiz-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+    .quiz-container { display: none; }
+    .quiz-container.active { display: block; }
+    .question-item { background: #f8fafc; border-radius: 20px; padding: 24px; margin-bottom: 20px; }
+    .question-text { font-weight: 700; font-size: 1rem; margin-bottom: 16px; color: #0f172a; }
+    .options-list { display: flex; flex-direction: column; gap: 10px; }
+    .option-label { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+    .option-label:hover { background: #eef2ff; border-color: #2563eb; }
+    .option-label input { width: 18px; height: 18px; cursor: pointer; }
+    .quiz-result { margin-top: 24px; padding: 24px; border-radius: 24px; text-align: center; display: none; }
+    .quiz-result.passed { background: #dcfce7; color: #15803d; display: block; }
+    .quiz-result.failed { background: #fee2e2; color: #b91c1c; display: block; }
+    .score-text { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
+    .retry-btn { background: #0f172a; color: white; border: none; padding: 10px 24px; border-radius: 40px; font-weight: 600; margin-top: 16px; cursor: pointer; transition: all 0.2s; }
+    .retry-btn:hover { transform: translateY(-2px); }
+    .random-notice { margin-bottom: 20px; padding: 12px 16px; background: #eef2ff; border-radius: 16px; font-size: 0.85rem; color: #2563eb; text-align: center; }
+    .loading { text-align: center; padding: 60px; font-size: 1.2rem; color: #64748b; }
+    
+    .footer { background-color: #0a0f2c; border-top: 1px solid #1e293b; margin-top: auto; padding: 40px 0; }
+    .footer-container { max-width: 1280px; margin: 0 auto; padding: 48px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; background-color: #0f172a; border-radius: 28px; border: 1px solid #1e293b; position: relative; }
+    .footer-container::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 1px solid rgba(37, 99, 235, 0.15); border-radius: 20px; pointer-events: none; }
+    .footer-logo { width: 80px; height: 80px; border-radius: 16px; margin-bottom: 16px; object-fit: cover; }
+    .footer-title { font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 16px; }
+    .footer-contact { font-size: 0.85rem; line-height: 1.7; color: #9ecbff; }
+    .footer-heading { font-size: 1rem; font-weight: 600; color: #e2e8f0; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+    .footer-heading::after { content: ''; position: absolute; bottom: 0; left: 0; width: 40px; height: 2px; background: linear-gradient(90deg, #2563eb, #1e40af); border-radius: 2px; }
+    .footer-box ul { list-style: none; padding: 0; margin: 0; }
+    .footer-box ul li { margin-bottom: 10px; }
+    .footer-box ul li a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+    .footer-box ul li a:hover { color: #60a5fa; transform: translateX(4px); }
+    .footer-image { width: 100%; max-width: 200px; border-radius: 16px; object-fit: cover; }
+    
+    @media (max-width: 768px) { .learning-container { padding: 20px; } .topics-grid { grid-template-columns: 1fr; } .exam-body { padding: 20px; } .footer-container { padding: 32px 24px; } }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-inner">
+      <a href="trang chủ.html" class="brand"><div class="brand-mark">H</div><div>Trợ Lý Học Đường</div></a>
+      <div class="user-menu">
+        <span id="userName" style="font-weight:500; color:#e0f2fe;"></span>
+        <div class="avatar" id="userAvatar"></div>
+        <button onclick="handleLogout()" class="logout-btn">Đăng xuất</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="learning-container">
+    <a href="dashboard.html" class="back-btn">← Quay lại bảng điều khiển</a>
+    <div id="loadingIndicator" class="loading">📚 Đang tải dữ liệu học tập...</div>
+    <div id="mainContent" style="display: none;">
+      <div class="subject-header">
+        <h1 id="subjectTitle">📐 Toán 10</h1>
+        <p id="subjectDesc">Tổng hợp kiến thức trọng tâm chương trình</p>
+      </div>
+      <div class="theory-section">
+        <div class="theory-header">
+          <h2>📖 Tóm tắt lý thuyết</h2>
+          <span class="topic-count" id="topicCount">0 chủ đề</span>
+        </div>
+        <div class="topics-grid" id="topicsGrid"></div>
+      </div>
+      <div class="exam-section">
+        <div class="exam-header">
+          <h2>📝 Luyện thi trắc nghiệm</h2>
+          <p>Kiểm tra kiến thức với 10 câu hỏi ngẫu nhiên từ tất cả các chủ đề</p>
+        </div>
+        <div class="exam-body">
+          <div class="quiz-info">
+            <span class="quiz-stats">📊 10 câu hỏi</span>
+            <span class="timer-display" id="timerDisplay">⏱️ 00:00</span>
+            <button class="start-quiz-btn" onclick="startQuiz()">🚀 Bắt đầu luyện thi</button>
+          </div>
+          <div id="quizContainer" class="quiz-container"></div>
+          <div id="quizResult" class="quiz-result"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+    <footer class="footer">
+      <div class="footer-container wow zoomIn">
+        <div class="footer-box">
+          <img src="https://i.pinimg.com/736x/76/d2/63/76d263ee4801280dd1332be35f609f49.jpg" alt="logo" class="footer-logo">
+          <h2 class="footer-title">Trợ Lý Học Đường</h2>
+          <div class="footer-contact" style="color: #9ecbff; line-height: 1.6; transition: color 0.3s ease;"
+               onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#9ecbff'">
+            SĐT: 0334299029<br>
+            Email: caphesua@gmail.com<br>
+            Địa chỉ: 123, QL6, Q8, HCMC
+          </div>
+        </div>
+
+        <div class="footer-box">
+          <h3 class="footer-heading">Liên kết</h3>
+          <ul>
+            <li><a href="trang chủ.html">Trang chủ</a></li>
+            <li><a href="login.html">Đăng nhập</a>
+            <li><a href="dashboard.html">Bảng điều khiển</a>
+            <li><a href="contact.html">Liên hệ</a>
+            <li><a href="login.html">Học thử ngay</a>
+          </ul>
+        </div>
+
+       
+        <div class="footer-box">
+          <h3 class="footer-heading">Điều hướng</h3>
+          <ul>
+            <li><a href="#features">Tính năng</a>
+            <li><a href="#impact">Tác động</a>
+            <li><a href="#ready">Bắt đầu học</a>
+          </ul>
+        </div>
+
+     
+        <div class="footer-box">
+          <img src="https://i.imgur.com/ZxUFFwu.jpg" alt="Resources Image" class="footer-image">
+        </div>
+
+      </div>
+    </footer>
+
+    <style>
+      .footer {
+        background-color: #0e1c2f;
+        padding: 60px 0 20px 0;
+      }
+
+      .footer-container {
+        background-color: #182b47;
+        border-radius: 20px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+        color: #f5f6fa;
+      }
+
+      .footer-box img.footer-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-image {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .footer-heading {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff !important;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 15px;
+      }
+
+      .footer-heading::before {
+        content: "•";
+        color: #ffffff;
+        font-size: 22px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+      }
+
+      .footer-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-box ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-box a {
+        color: #9ecbff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-box a:hover {
+        color: #00bcd4;
+      }
+
+ 
+      .footer-box,
+      .footer-box ul,
+      .footer-box .footer-contact {
+        text-align: left;
+      }
+
+      @media (max-width: 768px) {
+        .footer-container {
+          padding: 30px;
+        }
+      }
+    </style>
+    </footer>
+</div>
+
+<script>
+  let allTopics = [];
+  let currentQuizQuestions = [];
+  let userAnswers = [];
+  let currentSubjectId = null;
+  let currentSubjectName = null;
+  
+  // Timer variables
+  let quizStartTime = null;
+  let quizTimerInterval = null;
+  let quizActive = false;
+
+  const dataSourceMap = {
+    'toan10': { key: 'mathTopics', varName: 'mathTopics', name: 'Toán 10', desc: 'Hằng đẳng thức, phương trình, bất đẳng thức, lượng giác, hình học...' },
+    'toan11': { key: 'math11Topics', varName: 'math11Topics', name: 'Toán 11', desc: 'Lượng giác, tổ hợp xác suất, dãy số, giới hạn, đạo hàm, hình học không gian...' },
+    'toan12': { key: 'math12Topics', varName: 'math12Topics', name: 'Toán 12', desc: 'Khảo sát hàm số, mũ logarit, tích phân, số phức, hình học Oxyz...' }
+  };
+
+  function checkAuth() { 
+    if (typeof isLoggedIn !== 'undefined' && !isLoggedIn()) { 
+      window.location.href = 'login.html'; 
+      return false; 
+    } 
+    return true; 
+  }
+
+  function displayUserInfo() {
+    const user = getCurrentUser();
+    if (user) {
+      document.getElementById('userName').textContent = user.fullname;
+      const avatarUrl = getUserAvatar(user.id);
+      const avatarDiv = document.getElementById('userAvatar');
+      if (avatarUrl && avatarDiv) {
+        avatarDiv.style.backgroundImage = `url(${avatarUrl})`;
+        avatarDiv.style.backgroundSize = 'cover';
+        avatarDiv.style.backgroundPosition = 'center';
+        avatarDiv.textContent = '';
+      } else if (avatarDiv) {
+        avatarDiv.textContent = user.avatar;
+      }
+    }
+  }
+
+  function getSelectedSubject() {
+    const saved = localStorage.getItem('selectedSubject');
+    if (saved) {
+      const subject = JSON.parse(saved);
+      return subject;
+    }
+    return { id: 'toan10', name: 'Toán 10' };
+  }
+
+  function loadDataForSubject(subjectId) {
+    const source = dataSourceMap[subjectId];
+    if (!source) return [];
+    let topics = null;
+    const stored = localStorage.getItem(source.key);
+    if (stored) {
+      topics = JSON.parse(stored);
+    } else if (typeof window[source.varName] !== 'undefined') {
+      topics = window[source.varName];
+      localStorage.setItem(source.key, JSON.stringify(topics));
+    }
+    return topics || [];
+  }
+
+  function updateSubjectHeader(subjectId) {
+    const source = dataSourceMap[subjectId];
+    if (source) {
+      currentSubjectName = source.name;
+      document.getElementById('subjectTitle').innerHTML = `📐 ${source.name}`;
+      document.getElementById('subjectDesc').textContent = source.desc;
+      document.title = `${source.name} | Trợ Lý Học Đường`;
+    }
+  }
+
+  function renderTopics() {
+    const grid = document.getElementById('topicsGrid');
+    document.getElementById('topicCount').textContent = allTopics.length + ' chủ đề';
+    if (allTopics.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px;">📚 Chưa có dữ liệu cho môn học này.</div>';
+      return;
+    }
+    grid.innerHTML = allTopics.map((topic, index) => `
+      <div class="topic-card">
+        <div class="topic-header" onclick="toggleTopic(${index})">
+          <h3>📌 ${topic.title}</h3>
+          <span class="topic-badge">${topic.topic || 'Kiến thức'}</span>
+          <span class="expand-icon">▼</span>
+        </div>
+        <div class="topic-content" id="topicContent${index}">
+          <div class="theory-text">${(topic.content || '').replace(/\n/g, '<br>')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.toggleTopic = function(index) {
+    const content = document.getElementById(`topicContent${index}`);
+    const headers = document.querySelectorAll('.topic-header');
+    const header = headers[index];
+    if (content.classList.contains('open')) {
+      content.classList.remove('open');
+      header.classList.remove('open');
+    } else {
+      content.classList.add('open');
+      header.classList.add('open');
+    }
+  }
+
+  function getRandomQuestions() {
+    const allQuestions = [];
+    allTopics.forEach(topic => {
+      if (topic.questions && topic.questions.length > 0) {
+        topic.questions.forEach(q => {
+          allQuestions.push({ ...q, topicTitle: topic.title });
+        });
+      }
+    });
+    if (allQuestions.length === 0) return [];
+    for (let i = allQuestions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+    }
+    return allQuestions.slice(0, 10);
+  }
+
+  // Timer functions
+  function startTimer() {
+    quizStartTime = Date.now();
+    if (quizTimerInterval) clearInterval(quizTimerInterval);
+    quizTimerInterval = setInterval(updateTimerDisplay, 1000);
+  }
+
+  function updateTimerDisplay() {
+    if (!quizStartTime) return;
+    const elapsedSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+    document.getElementById('timerDisplay').innerHTML = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  function stopTimer() {
+    if (quizTimerInterval) {
+      clearInterval(quizTimerInterval);
+      quizTimerInterval = null;
+    }
+    const elapsedSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+    return elapsedSeconds;
+  }
+
+  function resetTimer() {
+    if (quizTimerInterval) {
+      clearInterval(quizTimerInterval);
+      quizTimerInterval = null;
+    }
+    quizStartTime = null;
+    document.getElementById('timerDisplay').innerHTML = '⏱️ 00:00';
+  }
+
+  window.startQuiz = function() {
+    if (allTopics.length === 0) {
+      alert("Chưa có câu hỏi cho môn học này!");
+      return;
+    }
+    currentQuizQuestions = getRandomQuestions();
+    if (currentQuizQuestions.length === 0) {
+      alert("Chưa có câu hỏi cho môn học này!");
+      return;
+    }
+    userAnswers = new Array(currentQuizQuestions.length).fill(null);
+    renderQuiz();
+    document.querySelector('.start-quiz-btn').style.display = 'none';
+    document.getElementById('quizContainer').classList.add('active');
+    document.getElementById('quizResult').style.display = 'none';
+    document.getElementById('quizResult').className = 'quiz-result';
+    document.getElementById('quizContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Start timer
+    startTimer();
+    quizActive = true;
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    const questionsHtml = currentQuizQuestions.map((q, idx) => `
+      <div class="question-item">
+        <div class="question-text">
+          <span style="background:#2563eb; color:white; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:14px; margin-right:12px;">${idx + 1}</span>
+          ${q.text}
+          <span style="display:block; font-size:0.7rem; color:#64748b; margin-top:8px;">📖 Nguồn: ${q.topicTitle}</span>
+        </div>
+        <div class="options-list">
+          ${q.options.map((opt, optIdx) => `
+            <label class="option-label">
+              <input type="radio" name="q${idx}" value="${optIdx}" onchange="selectAnswer(${idx}, ${optIdx})" ${userAnswers[idx] === optIdx ? 'checked' : ''}>
+              <span>${String.fromCharCode(65 + optIdx)}. ${opt}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+    container.innerHTML = `
+      <div class="random-notice">⚡ Bộ câu hỏi đã được tạo ngẫu nhiên từ ${allTopics.length} chủ đề. Làm lại sẽ có câu hỏi mới!</div>
+      ${questionsHtml}
+      <div style="display: flex; justify-content: center; margin-top: 32px;">
+        <button class="submit-quiz-btn" onclick="submitQuiz()">📝 Nộp bài và xem kết quả</button>
+      </div>
+    `;
+  }
+
+  window.selectAnswer = function(questionIdx, answerIdx) {
+    userAnswers[questionIdx] = answerIdx;
+  }
+
+  window.submitQuiz = function() {
+    const unanswered = userAnswers.filter(a => a === null).length;
+    if (unanswered > 0) {
+      alert(`⚠️ Bạn còn ${unanswered} câu chưa trả lời. Vui lòng hoàn thành tất cả câu hỏi!`);
+      return;
+    }
+    
+    // Stop timer and get elapsed time
+    const elapsedSeconds = stopTimer();
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+    const timeString = `${minutes} phút ${seconds} giây`;
+    
+    let score = 0;
+    const results = [];
+    const wrongQuestions = [];
+    
+    currentQuizQuestions.forEach((q, idx) => {
+      const isCorrect = userAnswers[idx] === q.correct;
+      if (isCorrect) score++;
+      else {
+        wrongQuestions.push({
+          question: q.text,
+          userAnswer: userAnswers[idx],
+          correctAnswer: q.correct,
+          userText: q.options[userAnswers[idx]],
+          correctText: q.options[q.correct],
+          topicTitle: q.topicTitle
+        });
+      }
+      results.push({
+        question: q.text,
+        userAnswer: userAnswers[idx],
+        correctAnswer: q.correct,
+        isCorrect: isCorrect,
+        correctText: q.options[q.correct],
+        userText: q.options[userAnswers[idx]]
+      });
+    });
+    
+    const percentage = (score / currentQuizQuestions.length) * 100;
+    const passed = score >= 7;
+    
+    // Lưu kết quả với thời gian và câu sai
+    const user = getCurrentUser();
+    const quizResult = {
+      userId: user.id,
+      userName: user.fullname,
+      subject: currentSubjectName,
+      score: score,
+      total: currentQuizQuestions.length,
+      percentage: percentage,
+      passed: passed,
+      timeSpent: elapsedSeconds,
+      timeString: timeString,
+      wrongQuestions: wrongQuestions,
+      timestamp: new Date().toISOString(),
+      date: new Date().toDateString()
+    };
+    
+    // Lưu vào localStorage
+    const allResults = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+    allResults.push(quizResult);
+    localStorage.setItem('quizHistory', JSON.stringify(allResults.slice(-100)));
+    
+    // Cập nhật thống kê câu sai
+    const mistakeStats = JSON.parse(localStorage.getItem('mistakeStats') || '[]');
+    wrongQuestions.forEach(wq => {
+      mistakeStats.push({
+        userId: user.id,
+        question: wq.question,
+        userAnswer: wq.userText,
+        correctAnswer: wq.correctText,
+        topic: wq.topicTitle,
+        timestamp: new Date().toISOString()
+      });
+    });
+    localStorage.setItem('mistakeStats', JSON.stringify(mistakeStats.slice(-500)));
+    
+    if (typeof updateSubjectProgress !== 'undefined') {
+      updateSubjectProgress(currentSubjectId, score, currentQuizQuestions.length, Math.ceil(elapsedSeconds / 60));
+    }
+    
+    const resultDiv = document.getElementById('quizResult');
+    resultDiv.className = `quiz-result ${passed ? 'passed' : 'failed'}`;
+    
+    let resultHtml = `
+      <div class="score-text">🎯 Điểm của bạn: ${score}/10 (${percentage}%)</div>
+      <p>⏱️ Thời gian làm bài: ${timeString}</p>
+      <p>${passed ? '🎉 Chúc mừng! Bạn đã vượt qua bài kiểm tra!' : '📖 Bạn cần ôn tập thêm. Hãy thử lại!'}</p>
+      <div style="margin-top: 16px;">
+        <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại bài thi (câu hỏi mới)</button>
+        <button class="retry-btn" style="background:#8b5cf6; margin-left:12px;" onclick="viewWrongAnswers()">📋 Xem câu sai và đáp án</button>
+        <button class="retry-btn" style="background:#2563eb; margin-left:12px;" onclick="viewDetailedResult()">📊 Xem chi tiết bài làm</button>
+        ${score === 10 ? '<button class="retry-btn" style="background:#10b981; margin-left:12px;" onclick="goToDashboard()">📊 Về bảng điều khiển</button>' : ''}
+      </div>
+    `;
+    
+    resultDiv.innerHTML = resultHtml;
+    resultDiv.style.display = 'block';
+    quizActive = false;
+    
+    localStorage.setItem('lastQuizResult', JSON.stringify({
+      score: score,
+      total: currentQuizQuestions.length,
+      percentage: percentage,
+      passed: passed,
+      results: results,
+      questions: currentQuizQuestions,
+      timeSpent: elapsedSeconds,
+      timeString: timeString
+    }));
+  }
+
+  window.viewWrongAnswers = function() {
+    const saved = localStorage.getItem('lastQuizResult');
+    if (saved) {
+      const data = JSON.parse(saved);
+      const wrongOnes = data.results.filter(r => !r.isCorrect);
+      if (wrongOnes.length === 0) {
+        alert('🎉 Chúc mừng! Bạn không có câu sai nào!');
+        return;
+      }
+      let detailsHtml = '<div style="max-height:400px; overflow-y:auto; text-align:left;">';
+      detailsHtml += `<p style="margin-bottom:12px;"><strong>📊 Bạn sai ${wrongOnes.length} câu:</strong></p>`;
+      wrongOnes.forEach((r, idx) => {
+        detailsHtml += `
+          <div style="padding:12px; margin-bottom:12px; background:#fee2e2; border-radius:16px;">
+            <strong>Câu ${idx + 1}:</strong> ${r.question}<br>
+            <span style="color:#15803d;">✓ Đáp án đúng: ${r.correctText}</span><br>
+            <span style="color:#b91c1c;">✎ Bạn chọn: ${r.userText}</span>
+          </div>
+        `;
+      });
+      detailsHtml += '</div>';
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000;';
+      modal.innerHTML = `<div style="background:white; border-radius:32px; max-width:600px; width:90%; max-height:80%; overflow:auto; padding:24px;">
+        <h3 style="margin-bottom:16px;">📋 Câu trả lời sai</h3>
+        ${detailsHtml}
+        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:20px; padding:10px 24px; background:#2563eb; color:white; border:none; border-radius:40px; cursor:pointer;">Đóng</button>
+      </div>`;
+      document.body.appendChild(modal);
+    }
+  }
+
+  window.retryQuiz = function() {
+    resetTimer();
+    startQuiz();
+  }
+
+  window.viewDetailedResult = function() {
+    const saved = localStorage.getItem('lastQuizResult');
+    if (saved) {
+      const data = JSON.parse(saved);
+      let detailsHtml = '<div style="max-height:400px; overflow-y:auto; text-align:left;">';
+      data.results.forEach((r, idx) => {
+        detailsHtml += `<div style="padding:12px; margin-bottom:12px; background:${r.isCorrect ? '#dcfce7' : '#fee2e2'}; border-radius:16px;">
+          <strong>Câu ${idx + 1}:</strong> ${r.question}<br>
+          <span style="color:#15803d;">✓ Đáp án đúng: ${r.correctText}</span><br>
+          <span style="color:${r.isCorrect ? '#15803d' : '#b91c1c'};">✎ Bạn chọn: ${r.userText}</span>
+        </div>`;
+      });
+      detailsHtml += `<div style="margin-top:12px; padding:12px; background:#eef2ff; border-radius:16px;">
+        <strong>⏱️ Thời gian làm bài:</strong> ${data.timeString || 'Chưa rõ'}
+      </div>`;
+      detailsHtml += '</div>';
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000;';
+      modal.innerHTML = `<div style="background:white; border-radius:32px; max-width:600px; width:90%; max-height:80%; overflow:auto; padding:24px;">
+        <h3 style="margin-bottom:16px;">📋 Chi tiết bài làm</h3>
+        ${detailsHtml}
+        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:20px; padding:10px 24px; background:#2563eb; color:white; border:none; border-radius:40px; cursor:pointer;">Đóng</button>
+      </div>`;
+      document.body.appendChild(modal);
+    }
+  }
+
+  window.goToDashboard = function() {
+    window.location.href = 'dashboard.html';
+  }
+
+  function handleLogout() {
+    logout();
+    window.location.href = 'trang chủ.html';
+  }
+
+  function init() {
+    if (!checkAuth()) return;
+    displayUserInfo();
+    const subject = getSelectedSubject();
+    currentSubjectId = subject.id;
+    currentSubjectName = subject.name;
+    updateSubjectHeader(subject.id);
+    allTopics = loadDataForSubject(subject.id);
+    console.log(`Đã load ${allTopics.length} chủ đề cho môn ${subject.name}`);
+    renderTopics();
+    document.getElementById('loadingIndicator').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  }
+
+  init();
+  window.handleLogout = handleLogout;
+</script>
+</body>
+</html>

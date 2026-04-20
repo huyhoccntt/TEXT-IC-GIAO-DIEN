@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Trợ Lý Học Đường | AI Cá nhân hóa cho học sinh THPT</title>
+  <meta name="description" content="Nền tảng AI giúp học sinh lớp 10-12 hiểu sâu bản chất, bứt phá điểm số với trợ giảng 24/7 và phân tích lỗ hổng kiến thức thông minh." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      background-size: cover;
+      background-position: center;
+    }
+    .settings-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #e0f2fe;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .settings-link:hover {
+      color: #60a5fa;
+    }
+    .logout-btn {
+      background: none;
+      border: none;
+      color: #e0f2fe;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .logout-btn:hover {
+      color: #ef4444;
+    }
+    .user-name {
+      font-weight: 500;
+      color: #e0f2fe;
+    }
+    .admin-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">H</div>
+        <div>Trợ Lý Học Đường</div>
+      </div>
+      <nav class="nav">
+        <a href="#features">Tính năng</a>
+        <a href="#impact">Tác động</a>
+        <a href="#ready">Bắt đầu học</a>
+      </nav>
+      <div id="headerActions" class="header-actions"></div>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebadge">✨ Giải pháp AI cho học sinh lớp 10-12</div>
+        <h1 class="hero-title">Hiểu sâu bản chất <strong>Bứt phá điểm số</strong></h1>
+        <p class="hero-text">Nền tảng AI đầu tiên tại Việt Nam giúp học sinh THPT phát hiện lỗ hổng kiến thức và rèn luyện tư duy thay vì chỉ cung cấp lời giải mẫu.</p>
+        <div class="button-group" style="margin-top:28px;" id="heroButtons">
+        </div>
+      </div>
+      <div class="hero-card">
+        <span>🧠 AI Tutor · Học thông minh hơn</span>
+      </div>
+    </div>
+  </main>
+
+  <section id="features" class="section bg-white">
+    <div class="section-title">
+      <h2>Giải pháp cho mọi vấn đề học tập</h2>
+      <p>Tối ưu hóa thời gian, giảm phụ thuộc vào học thêm truyền thống bằng công nghệ AI tiên tiến.</p>
+    </div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3 class="feature-title">Phân tích lỗi sai</h3>
+        <p class="feature-desc">AI không chỉ đưa đáp án mà chỉ rõ tại sao em lại sai ở từng bước giải, từ đó hiểu gốc rễ vấn đề.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3 class="feature-title">Đa dạng góc nhìn</h3>
+        <p class="feature-desc">Gợi ý nhiều cách giải khác nhau để rèn luyện tư duy linh hoạt, tự tin trước mọi dạng bài.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3 class="feature-title">Phát hiện lỗ hổng</h3>
+        <p class="feature-desc">Dựa trên lịch sử làm bài để chỉ ra phần kiến thức em đang bị hổng và đề xuất lộ trình ôn tập cá nhân hóa.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏳</div>
+        <h3 class="feature-title">Trợ giảng 24/7</h3>
+        <p class="feature-desc">Học mọi lúc mọi nơi, giải đáp ngay lập tức những khái niệm khó hiểu, không lo mất gốc.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="impact" class="section bg-soft">
+    <div class="impact-grid">
+      <div>
+        <h2>Công bằng trong giáo dục</h2>
+        <div class="impact-list">
+          <div class="impact-item"><div class="impact-dot">✓</div><p>Giảm 60% chi phí và thời gian đi học thêm.</p></div>
+          <div class="impact-item"><div class="impact-dot">✓</div><p>Cải thiện điểm số trung bình từ 1.5 - 2 điểm sau 3 tháng.</p></div>
+          <div class="impact-item"><div class="impact-dot">✓</div><p>Học sinh vùng sâu vùng xa tiếp cận kiến thức chất lượng cao.</p></div>
+          <div class="impact-item"><div class="impact-dot">✓</div><p>Phụ huynh dễ dàng theo sát tiến độ học tập của con.</p></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><p class="stat-value">2.3M</p><p class="stat-label">Học sinh THPT</p></div>
+        <div class="stat-card primary"><p class="stat-value">5%</p><p class="stat-label">Mục tiêu tiếp cận</p></div>
+        <div class="stat-card"><p class="stat-value">24/7</p><p class="stat-label">Thời gian hỗ trợ</p></div>
+        <div class="stat-card"><p class="stat-value">12+</p><p class="stat-label">Môn học hỗ trợ</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="cta" id="ready">
+      <h2>Sẵn sàng để bứt phá điểm số?</h2>
+      <p>Gia nhập hàng ngàn học sinh đang thay đổi cách học với Trợ Lý Học Đường.</p>
+      <div style="margin-top: 28px;"><a class="btn btn-primary" href="login.html" id="ctaButton">Đăng ký ngay →</a></div>
+    </div>
+  </section>
+
+   <footer class="footer">
+      <div class="footer-container wow zoomIn">
+        <div class="footer-box">
+          <img src="https://i.pinimg.com/736x/76/d2/63/76d263ee4801280dd1332be35f609f49.jpg" alt="logo" class="footer-logo">
+          <h2 class="footer-title">Trợ Lý Học Đường</h2>
+          <div class="footer-contact" style="color: #9ecbff; line-height: 1.6; transition: color 0.3s ease;"
+               onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#9ecbff'">
+            SĐT: 0334299029<br>
+            Email: caphesua@gmail.com<br>
+            Địa chỉ: 123, QL6, Q8, HCMC
+          </div>
+        </div>
+
+        <div class="footer-box">
+          <h3 class="footer-heading">Liên kết</h3>
+          <ul>
+            <li><a href="trang chủ.html">Trang chủ</a></li>
+            <li><a href="login.html">Đăng nhập</a>
+            <li><a href="dashboard.html">Bảng điều khiển</a>
+            <li><a href="contact.html">Liên hệ</a>
+            <li><a href="login.html">Học thử ngay</a>
+          </ul>
+        </div>
+
+       
+        <div class="footer-box">
+          <h3 class="footer-heading">Điều hướng</h3>
+          <ul>
+            <li><a href="#features">Tính năng</a>
+            <li><a href="#impact">Tác động</a>
+            <li><a href="#ready">Bắt đầu học</a>
+          </ul>
+        </div>
+
+     
+        <div class="footer-box">
+          <img src="https://i.imgur.com/ZxUFFwu.jpg" alt="Resources Image" class="footer-image">
+        </div>
+
+      </div>
+    </footer>
+
+    <style>
+      .footer {
+        background-color: #0e1c2f;
+        padding: 60px 0 20px 0;
+      }
+
+      .footer-container {
+        background-color: #182b47;
+        border-radius: 20px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+        color: #f5f6fa;
+      }
+
+      .footer-box img.footer-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-image {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .footer-heading {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff !important;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 15px;
+      }
+
+      .footer-heading::before {
+        content: "•";
+        color: #ffffff;
+        font-size: 22px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+      }
+
+      .footer-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-box ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-box a {
+        color: #9ecbff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-box a:hover {
+        color: #00bcd4;
+      }
+
+ 
+      .footer-box,
+      .footer-box ul,
+      .footer-box .footer-contact {
+        text-align: left;
+      }
+
+      @media (max-width: 768px) {
+        .footer-container {
+          padding: 30px;
+        }
+      }
+    </style>
+    </footer>
+</div>
+
+<script src="auth.js"></script>
+<script>
+  // Kiểm tra trạng thái đăng nhập và cập nhật header
+  function updateHeaderBasedOnAuth() {
+    const headerActions = document.getElementById('headerActions');
+    const heroButtons = document.getElementById('heroButtons');
+    const ctaButton = document.getElementById('ctaButton');
+    const isLoggedIn = typeof window.isLoggedIn === 'function' ? window.isLoggedIn() : false;
+    
+    if (isLoggedIn) {
+      const user = getCurrentUser();
+      const avatarUrl = getUserAvatar ? getUserAvatar(user.id) : null;
+      const isUserAdmin = user.isAdmin === true || user.email === 'admin@example.com';
+      
+      // Hiển thị badge admin nếu là admin
+      const adminBadge = isUserAdmin ? '<span class="admin-badge">Admin</span>' : '';
+      
+      // Cập nhật header actions (phải)
+      headerActions.innerHTML = `
+        <div class="user-menu">
+          <span class="user-name">${user.fullname}${adminBadge}</span>
+          <div class="avatar" id="headerAvatar"></div>
+          <a href="settings.html" class="settings-link">⚙️ Cài đặt</a>
+          <button onclick="handleLogout()" class="logout-btn">Đăng xuất</button>
+        </div>
+      `;
+      
+      // Cập nhật avatar trên header
+      const avatarDiv = document.getElementById('headerAvatar');
+      if (avatarUrl && avatarDiv) {
+        avatarDiv.style.backgroundImage = `url(${avatarUrl})`;
+        avatarDiv.style.backgroundSize = 'cover';
+        avatarDiv.style.backgroundPosition = 'center';
+        avatarDiv.textContent = '';
+      } else if (avatarDiv) {
+        avatarDiv.textContent = user.avatar;
+      }
+      
+      // Nếu là admin -> chuyển đến admin.html, ngược lại -> dashboard.html
+      const dashboardLink = isUserAdmin ? 'admin.html' : 'dashboard.html';
+      const dashboardText = isUserAdmin ? '📊 Vào trang quản trị' : '📊 Vào bảng điều khiển';
+      
+      // Cập nhật hero buttons (bên dưới tiêu đề)
+      heroButtons.innerHTML = `
+        <a href="${dashboardLink}" class="btn btn-primary">${dashboardText}</a>
+        <a href="hoc-tap.html" class="btn btn-secondary">📖 Bắt đầu học ngay</a>
+      `;
+      
+      // Cập nhật CTA button
+      if (ctaButton) {
+        ctaButton.href = dashboardLink;
+        ctaButton.textContent = dashboardText + " →";
+      }
+    } else {
+      // Chưa đăng nhập - hiển thị nút đăng nhập/đăng ký
+      headerActions.innerHTML = `
+        <a href="login.html" class="link-button">Đăng nhập</a>
+        <a href="login.html" class="btn btn-primary btn-sm">Học thử ngay</a>
+      `;
+      
+      heroButtons.innerHTML = `
+        <a href="login.html" class="btn btn-primary">Đăng nhập</a>
+        <a href="login.html" class="btn btn-secondary">Tạo tài khoản</a>
+        <a href="dashboard.html" class="btn btn-secondary">Bảng điều khiển</a>
+        <a href="contact.html" class="btn btn-secondary">Liên hệ</a>
+      `;
+      
+      if (ctaButton) {
+        ctaButton.href = "login.html";
+        ctaButton.textContent = "Đăng ký ngay →";
+      }
+    }
+  }
+  
+  function handleLogout() {
+    if (typeof logout === 'function') {
+      logout();
+      window.location.href = 'trang chủ.html';
+    }
+  }
+  
+  // Khởi tạo khi trang load
+  document.addEventListener('DOMContentLoaded', function() {
+    updateHeaderBasedOnAuth();
+  });
+</script>
+</body>
+</html>

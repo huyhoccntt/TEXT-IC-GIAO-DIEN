@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Admin Dashboard | Trợ Lý Học Đường</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card-admin {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+      border: 1px solid #eef2f6;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+
+    .stat-card-admin:hover {
+      transform: translateY(-4px);
+    }
+
+    .stat-card-admin .number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .stat-card-admin .label {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 8px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #eef2f6;
+      padding-bottom: 16px;
+    }
+
+    .tab-btn {
+      padding: 10px 24px;
+      border: none;
+      background: #f1f5f9;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Bảng users */
+    .data-table {
+      width: 100%;
+      overflow-x: auto;
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #eef2f6;
+    }
+
+    .data-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th, .data-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eef2f6;
+    }
+
+    .data-table th {
+      background: #f8fafc;
+      font-weight: 600;
+    }
+
+    .data-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-admin { background: #fee2e2; color: #b91c1c; }
+    .badge-user { background: #dcfce7; color: #15803d; }
+    .badge-online { background: #dbeafe; color: #1d4ed8; }
+    .badge-offline { background: #f1f5f9; color: #64748b; }
+
+    /* Form card */
+    .form-card {
+      background: white;
+      border-radius: 28px;
+      padding: 28px;
+      border: 1px solid #eef2f6;
+      margin-bottom: 32px;
+    }
+
+    .form-card h3 {
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #2563eb;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+
+
+    .tree-node {
+      margin-left: 20px;
+      padding: 8px 0;
+      border-left: 2px solid #e2e8f0;
+    }
+
+    .tree-item {
+      padding: 8px 12px;
+      margin: 4px 0;
+      background: #f8fafc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tree-item:hover {
+      background: #eef2ff;
+    }
+
+    .tree-item.selected {
+      background: #dbeafe;
+      border-left: 3px solid #2563eb;
+    }
+
+
+    .chat-item {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #eef2f6;
+    }
+
+    .chat-question {
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 8px;
+    }
+
+    .chat-answer {
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .chat-meta {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .config-card {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert-success {
+      background: #dcfce7;
+      color: #15803d;
+      display: block;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #b91c1c;
+      display: block;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .stats-chart {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    canvas {
+      max-height: 300px;
+    }
+
+    @media (max-width: 768px) {
+      .admin-container { padding: 20px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-inner">
+      <a href="trang chủ.html" class="brand">
+        <div class="brand-mark">H</div>
+        <div>Trợ Lý Học Đường - Admin</div>
+      </a>
+      <div class="user-menu">
+        <span id="adminName" style="font-weight:500; color:#e0f2fe;"></span>
+        <button onclick="handleAdminLogout()" class="logout-btn" style="background:none; border:none; color:#e0f2fe; cursor:pointer;">Đăng xuất</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <a href="trang chủ.html" class="back-btn">← Quay lại trang chủ</a>
+
+    <div class="admin-header">
+      <h1>📊 Bảng điều khiển quản trị</h1>
+      <button class="btn-primary" onclick="refreshAllData()">🔄 Làm mới dữ liệu</button>
+    </div>
+
+    <div id="alertMsg" class="alert"></div>
+
+
+    <div class="admin-stats" id="statsContainer">
+      <div class="stat-card-admin"><div class="number" id="totalUsers">0</div><div class="label">Người dùng</div></div>
+      <div class="stat-card-admin"><div class="number" id="onlineUsers">0</div><div class="label">Đang trực tuyến</div></div>
+      <div class="stat-card-admin"><div class="number" id="todayVisits">0</div><div class="label">Truy cập hôm nay</div></div>
+      <div class="stat-card-admin"><div class="number" id="totalSubjects">0</div><div class="label">Môn học</div></div>
+      <div class="stat-card-admin"><div class="number" id="totalTopics">0</div><div class="label">Chủ đề</div></div>
+      <div class="stat-card-admin"><div class="number" id="totalQuestions">0</div><div class="label">Câu hỏi</div></div>
+    </div>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="users">👥 Quản lý người dùng</button>
+      <button class="tab-btn" data-tab="structure">📚 Cấu trúc học tập</button>
+      <button class="tab-btn" data-tab="chat-history">💬 Lịch sử hỏi đáp</button>
+      <button class="tab-btn" data-tab="statistics">📈 Thống kê hệ thống</button>
+      <button class="tab-btn" data-tab="ai-config">🤖 Cấu hình AI</button>
+    </div>
+
+    <!-- Tab Users -->
+    <div id="tab-users" class="tab-content active">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Họ tên</th><th>Email</th><th>Lớp</th><th>SĐT</th><th>Trạng thái</th><th>Ngày tạo</th><th>Giờ học</th><th>Câu đã làm</th><th>Thao tác</th></tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab Structure -->
+    <div id="tab-structure" class="tab-content">
+      <div class="form-card">
+        <h3>➕ Thêm môn học mới</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Tên môn học</label><input type="text" id="newSubjectName" placeholder="VD: Toán 10"></div>
+          <div class="form-group"><label>Mã môn</label><input type="text" id="newSubjectId" placeholder="VD: toan10"></div>
+          <div class="form-group"><label>Biểu tượng</label><input type="text" id="newSubjectIcon" placeholder="VD: 📐"></div>
+        </div>
+        <button class="btn-primary" onclick="addNewSubject()">➕ Thêm môn học</button>
+      </div>
+
+      <div class="form-card">
+        <h3>➕ Thêm chủ đề</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Chọn môn học</label><select id="topicSubjectSelect"></select></div>
+          <div class="form-group"><label>Tiêu đề chủ đề</label><input type="text" id="newTopicTitle" placeholder="VD: Hằng đẳng thức"></div>
+        </div>
+        <div class="form-group"><label>Nội dung lý thuyết</label><textarea id="newTopicContent" rows="5" placeholder="Nhập nội dung lý thuyết..."></textarea></div>
+        <button class="btn-primary" onclick="addNewTopic()">➕ Thêm chủ đề</button>
+      </div>
+
+      <div id="structureTree" class="data-table" style="padding: 20px;"></div>
+    </div>
+
+    <!-- Tab Chat History -->
+    <div id="tab-chat-history" class="tab-content">
+      <div class="form-row">
+        <div class="form-group"><label>Lọc theo người dùng</label><select id="chatUserFilter" onchange="loadChatHistory()"><option value="all">Tất cả người dùng</option></select></div>
+        <div class="form-group"><label>Lọc theo ngày</label><input type="date" id="chatDateFilter" onchange="loadChatHistory()"></div>
+        <div class="form-group"><label>Tìm kiếm</label><input type="text" id="chatSearch" placeholder="Nhập từ khóa..." onkeyup="loadChatHistory()"></div>
+      </div>
+      <div id="chatHistoryList"></div>
+    </div>
+
+    <div id="tab-statistics" class="tab-content">
+      <div class="stats-chart">
+        <h3>📊 Lượng truy cập 7 ngày qua</h3>
+        <canvas id="visitChart"></canvas>
+      </div>
+      <div class="stats-chart">
+        <h3>📚 Hoạt động học tập</h3>
+        <canvas id="activityChart"></canvas>
+      </div>
+      <div class="admin-stats" style="margin-top: 20px;">
+        <div class="stat-card-admin"><div class="number" id="totalChats">0</div><div class="label">Tổng số câu hỏi AI</div></div>
+        <div class="stat-card-admin"><div class="number" id="avgScore">0</div><div class="label">Điểm TB toàn hệ thống</div></div>
+        <div class="stat-card-admin"><div class="number" id="totalStudyTime">0</div><div class="label">Tổng giờ học</div></div>
+      </div>
+    </div>
+
+    <!-- Tab AI Config -->
+    <div id="tab-ai-config" class="tab-content">
+      <div class="form-card">
+        <h3>🤖 Cấu hình AI Assistant</h3>
+        <div class="form-group"><label>System Prompt (Hướng dẫn AI)</label><textarea id="aiSystemPrompt" rows="6" placeholder="Nhập system prompt cho AI..."></textarea></div>
+        <div class="form-group"><label>Temperature (Độ sáng tạo, 0-1)</label><input type="range" id="aiTemperature" min="0" max="1" step="0.1" value="0.7"><span id="tempValue">0.7</span></div>
+        <div class="form-group"><label>Max tokens</label><input type="number" id="aiMaxTokens" value="500"></div>
+        <button class="btn-primary" onclick="saveAIConfig()">💾 Lưu cấu hình AI</button>
+      </div>
+
+      <div class="form-card">
+        <h3>📝 Sửa lỗi câu trả lời AI</h3>
+        <div class="form-group"><label>Câu hỏi bị sai</label><input type="text" id="wrongQuestion" placeholder="Nhập câu hỏi mà AI trả lời sai"></div>
+        <div class="form-group"><label>Câu trả lời đúng mong muốn</label><textarea id="correctAnswer" rows="3" placeholder="Nhập câu trả lời đúng"></textarea></div>
+        <div class="form-group"><label>Chủ đề liên quan</label><select id="fixTopicSelect"></select></div>
+        <button class="btn-primary" onclick="fixAIResponse()">🔧 Sửa lỗi AI và thêm vào kiến thức</button>
+      </div>
+
+      <div class="form-card">
+        <h3>📚 Kiến thức bổ sung cho AI</h3>
+        <div id="aiKnowledgeList"></div>
+        <div class="form-group"><label>Thêm kiến thức mới</label><textarea id="newKnowledge" rows="3" placeholder="Nhập kiến thức mới để AI học..."></textarea></div>
+        <button class="btn-primary" onclick="addAIKnowledge()">➕ Thêm kiến thức</button>
+      </div>
+    </div>
+  </main>
+
+   <footer class="footer">
+      <div class="footer-container wow zoomIn">
+        <div class="footer-box">
+          <img src="https://i.pinimg.com/736x/76/d2/63/76d263ee4801280dd1332be35f609f49.jpg" alt="logo" class="footer-logo">
+          <h2 class="footer-title">Trợ Lý Học Đường</h2>
+          <div class="footer-contact" style="color: #9ecbff; line-height: 1.6; transition: color 0.3s ease;"
+               onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#9ecbff'">
+            SĐT: 0334299029<br>
+            Email: caphesua@gmail.com<br>
+            Địa chỉ: 123, QL6, Q8, HCMC
+          </div>
+        </div>
+
+        <div class="footer-box">
+          <h3 class="footer-heading">Liên kết</h3>
+          <ul>
+            <li><a href="trang chủ.html">Trang chủ</a></li>
+            <li><a href="login.html">Đăng nhập</a>
+            <li><a href="dashboard.html">Bảng điều khiển</a>
+            <li><a href="contact.html">Liên hệ</a>
+            <li><a href="login.html">Học thử ngay</a>
+          </ul>
+        </div>
+
+       
+        <div class="footer-box">
+          <h3 class="footer-heading">Điều hướng</h3>
+          <ul>
+            <li><a href="#features">Tính năng</a>
+            <li><a href="#impact">Tác động</a>
+            <li><a href="#ready">Bắt đầu học</a>
+          </ul>
+        </div>
+
+     
+        <div class="footer-box">
+          <img src="https://i.imgur.com/ZxUFFwu.jpg" alt="Resources Image" class="footer-image">
+        </div>
+
+      </div>
+    </footer>
+
+    <style>
+      .footer {
+        background-color: #0e1c2f;
+        padding: 60px 0 20px 0;
+      }
+
+      .footer-container {
+        background-color: #182b47;
+        border-radius: 20px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+        color: #f5f6fa;
+      }
+
+      .footer-box img.footer-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-image {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .footer-heading {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff !important;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 15px;
+      }
+
+      .footer-heading::before {
+        content: "•";
+        color: #ffffff;
+        font-size: 22px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+      }
+
+      .footer-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-box ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-box a {
+        color: #9ecbff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-box a:hover {
+        color: #00bcd4;
+      }
+
+ 
+      .footer-box,
+      .footer-box ul,
+      .footer-box .footer-contact {
+        text-align: left;
+      }
+
+      @media (max-width: 768px) {
+        .footer-container {
+          padding: 30px;
+        }
+      }
+    </style>
+    </footer>
+</div>
+
+<script src="auth.js"></script>
+<script>
+  // Biến toàn cục
+  let visitChart, activityChart;
+  let currentSubjects = [
+    { id: "toan10", name: "Toán 10", icon: "📐" },
+    { id: "toan11", name: "Toán 11", icon: "📏" },
+    { id: "toan12", name: "Toán 12", icon: "📊" }
+  ];
+
+  // Kiểm tra quyền admin
+  function checkAdminAuth() {
+    const user = getCurrentUser();
+    if (!user) { window.location.href = 'login.html'; return false; }
+    if (!user.isAdmin && user.email !== 'admin@example.com') {
+      alert('Bạn không có quyền truy cập trang quản trị!');
+      window.location.href = 'trang chủ.html';
+      return false;
+    }
+    document.getElementById('adminName').textContent = user.fullname;
+    return true;
+  }
+
+  function showAlert(message, isError = false) {
+    const alertDiv = document.getElementById('alertMsg');
+    alertDiv.textContent = message;
+    alertDiv.className = `alert ${isError ? 'alert-error' : 'alert-success'}`;
+    setTimeout(() => {
+      alertDiv.style.display = 'none';
+      alertDiv.className = 'alert';
+    }, 3000);
+  }
+
+  // Cập nhật thống kê
+  function updateStats() {
+    const users = getAllUsers();
+    const onlineUsers = JSON.parse(localStorage.getItem('onlineUsers') || '[]');
+    const visits = JSON.parse(localStorage.getItem('visitStats') || '[]');
+    const today = new Date().toDateString();
+    const todayVisits = visits.filter(v => new Date(v.date).toDateString() === today).length;
+    
+    document.getElementById('totalUsers').textContent = users.length;
+    document.getElementById('onlineUsers').textContent = onlineUsers.length;
+    document.getElementById('todayVisits').textContent = todayVisits;
+    document.getElementById('totalSubjects').textContent = currentSubjects.length;
+    
+    let totalTopics = 0, totalQuestions = 0;
+    for (const subject of currentSubjects) {
+      const data = localStorage.getItem(`${subject.id}Topics`);
+      if (data) {
+        const topics = JSON.parse(data);
+        totalTopics += topics.length;
+        topics.forEach(t => totalQuestions += (t.questions?.length || 0));
+      }
+    }
+    document.getElementById('totalTopics').textContent = totalTopics;
+    document.getElementById('totalQuestions').textContent = totalQuestions;
+    
+    // Thống kê chat
+    const chats = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    document.getElementById('totalChats').textContent = chats.length;
+    
+    let totalScore = 0, totalStudy = 0;
+    users.forEach(u => {
+      totalScore += u.stats?.averageScore || 0;
+      totalStudy += u.stats?.totalStudyHours || 0;
+    });
+    document.getElementById('avgScore').textContent = users.length ? (totalScore / users.length).toFixed(1) : 0;
+    document.getElementById('totalStudyTime').textContent = totalStudy.toFixed(0);
+  }
+
+  // Hiển thị danh sách users
+  function loadUsersList() {
+    const users = getAllUsers();
+    const onlineUsers = JSON.parse(localStorage.getItem('onlineUsers') || '[]');
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = users.map(user => `
+      <tr>
+        <td>${user.id}</td>
+        <td>${user.fullname}</td>
+        <td>${user.email}</td>
+        <td>${user.grade}</td>
+        <td>${user.phone || '-'}</td>
+        <td><span class="badge ${onlineUsers.includes(user.id) ? 'badge-online' : 'badge-offline'}">${onlineUsers.includes(user.id) ? '● Trực tuyến' : '○ Offline'}</span></td>
+        <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+        <td>${user.stats?.totalStudyHours || 0}h</td>
+        <td>${user.stats?.completedLessons || 0}</td>
+        <td><button class="btn-danger btn-sm" onclick="deleteUserAccount('${user.id}')">Xóa</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function deleteUserAccount(userId) {
+    if (confirm('Bạn có chắc muốn xóa người dùng này?')) {
+      deleteUser(userId);
+      loadUsersList();
+      updateStats();
+      showAlert('Đã xóa người dùng!');
+    }
+  }
+
+  // Cấu trúc học tập
+  function loadStructureTree() {
+    const container = document.getElementById('structureTree');
+    let html = '<div style="font-weight:600; margin-bottom:16px;">📚 Cấu trúc khóa học</div>';
+    
+    for (const subject of currentSubjects) {
+      const topics = JSON.parse(localStorage.getItem(`${subject.id}Topics`) || '[]');
+      html += `<div class="tree-node">
+        <div class="tree-item" style="background:#eef2ff; font-weight:600;">${subject.icon} ${subject.name} <span style="float:right; font-size:12px;">(${topics.length} chủ đề)</span></div>`;
+      topics.forEach((topic, idx) => {
+        html += `<div class="tree-node">
+          <div class="tree-item">📖 ${topic.title} <span style="float:right; font-size:12px;">${topic.questions?.length || 0} câu hỏi</span>
+            <div style="margin-top:8px;">
+              <button class="btn-primary btn-sm" onclick="editTopicPrompt('${subject.id}', ${idx})">✏️ Sửa</button>
+              <button class="btn-danger btn-sm" onclick="deleteTopicItem('${subject.id}', ${idx})">🗑️ Xóa</button>
+            </div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    container.innerHTML = html;
+  }
+
+  function addNewSubject() {
+    const name = document.getElementById('newSubjectName').value.trim();
+    const id = document.getElementById('newSubjectId').value.trim();
+    const icon = document.getElementById('newSubjectIcon').value.trim();
+    if (!name || !id) { showAlert('Vui lòng nhập tên và mã môn học!', true); return; }
+    currentSubjects.push({ id, name, icon });
+    localStorage.setItem('subjects', JSON.stringify(currentSubjects));
+    document.getElementById('newSubjectName').value = '';
+    document.getElementById('newSubjectId').value = '';
+    document.getElementById('newSubjectIcon').value = '';
+    loadStructureTree();
+    updateStats();
+    showAlert('Đã thêm môn học mới!');
+  }
+
+  function addNewTopic() {
+    const subjectId = document.getElementById('topicSubjectSelect').value;
+    const title = document.getElementById('newTopicTitle').value.trim();
+    const content = document.getElementById('newTopicContent').value.trim();
+    if (!title || !content) { showAlert('Vui lòng nhập đầy đủ thông tin!', true); return; }
+    
+    const topics = JSON.parse(localStorage.getItem(`${subjectId}Topics`) || '[]');
+    topics.push({ id: Date.now(), title, topic: 'Kiến thức', grade_level: 10, content, questions: [] });
+    localStorage.setItem(`${subjectId}Topics`, JSON.stringify(topics));
+    
+    document.getElementById('newTopicTitle').value = '';
+    document.getElementById('newTopicContent').value = '';
+    loadStructureTree();
+    updateStats();
+    showAlert('Đã thêm chủ đề mới!');
+  }
+
+  function editTopicPrompt(subjectId, topicIndex) {
+    const topics = JSON.parse(localStorage.getItem(`${subjectId}Topics`) || '[]');
+    const topic = topics[topicIndex];
+    const newTitle = prompt('Nhập tiêu đề mới:', topic.title);
+    if (newTitle) topic.title = newTitle;
+    const newContent = prompt('Nhập nội dung mới:', topic.content);
+    if (newContent) topic.content = newContent;
+    localStorage.setItem(`${subjectId}Topics`, JSON.stringify(topics));
+    loadStructureTree();
+    showAlert('Đã cập nhật chủ đề!');
+  }
+
+  function deleteTopicItem(subjectId, topicIndex) {
+    if (confirm('Bạn có chắc muốn xóa chủ đề này?')) {
+      const topics = JSON.parse(localStorage.getItem(`${subjectId}Topics`) || '[]');
+      topics.splice(topicIndex, 1);
+      localStorage.setItem(`${subjectId}Topics`, JSON.stringify(topics));
+      loadStructureTree();
+      updateStats();
+      showAlert('Đã xóa chủ đề!');
+    }
+  }
+
+  // Lịch sử hỏi đáp
+  function loadChatHistory() {
+    const chats = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    const userFilter = document.getElementById('chatUserFilter').value;
+    const dateFilter = document.getElementById('chatDateFilter').value;
+    const search = document.getElementById('chatSearch').value.toLowerCase();
+    
+    let filtered = chats;
+    if (userFilter !== 'all') filtered = filtered.filter(c => c.userId === userFilter);
+    if (dateFilter) filtered = filtered.filter(c => c.date === dateFilter);
+    if (search) filtered = filtered.filter(c => c.question.toLowerCase().includes(search) || c.answer.toLowerCase().includes(search));
+    
+    const container = document.getElementById('chatHistoryList');
+    container.innerHTML = filtered.reverse().map(chat => `
+      <div class="chat-item">
+        <div class="chat-question">❓ ${chat.question}</div>
+        <div class="chat-answer">💡 ${chat.answer}</div>
+        <div class="chat-meta">👤 ${chat.userName} | 📅 ${chat.date} | 🕐 ${chat.time}</div>
+      </div>
+    `).join('');
+    if (filtered.length === 0) container.innerHTML = '<div style="text-align:center; padding:40px;">📭 Chưa có lịch sử hỏi đáp</div>';
+  }
+
+  // Thống kê biểu đồ
+  function loadCharts() {
+    const visits = JSON.parse(localStorage.getItem('visitStats') || '[]');
+    const last7Days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      last7Days.push(d.toDateString());
+    }
+    const visitCounts = last7Days.map(day => visits.filter(v => new Date(v.date).toDateString() === day).length);
+    
+    if (visitChart) visitChart.destroy();
+    visitChart = new Chart(document.getElementById('visitChart'), {
+      type: 'line', data: { labels: last7Days.map(d => d.substring(0, 10)), datasets: [{ label: 'Lượt truy cập', data: visitCounts, borderColor: '#2563eb', tension: 0.3 }] }
+    });
+    
+    const users = getAllUsers();
+    const activityData = [0, 0, 0, 0];
+    users.forEach(u => {
+      const progress = u.stats?.subjects?.math?.progress || 0;
+      if (progress >= 75) activityData[0]++;
+      else if (progress >= 50) activityData[1]++;
+      else if (progress >= 25) activityData[2]++;
+      else activityData[3]++;
+    });
+    if (activityChart) activityChart.destroy();
+    activityChart = new Chart(document.getElementById('activityChart'), {
+      type: 'bar', data: { labels: ['Xuất sắc', 'Khá', 'Trung bình', 'Yếu'], datasets: [{ label: 'Số học sinh', data: activityData, backgroundColor: '#3b82f6' }] }
+    });
+  }
+
+  // Cấu hình AI
+  function loadAIConfig() {
+    const config = JSON.parse(localStorage.getItem('aiConfig') || '{"systemPrompt":"Bạn là trợ lý AI thông minh chuyên về giáo dục. Hãy trả lời câu hỏi của học sinh một cách chính xác, dễ hiểu và có ví dụ cụ thể.","temperature":0.7,"maxTokens":500}');
+    document.getElementById('aiSystemPrompt').value = config.systemPrompt;
+    document.getElementById('aiTemperature').value = config.temperature;
+    document.getElementById('tempValue').textContent = config.temperature;
+    document.getElementById('aiMaxTokens').value = config.maxTokens;
+    
+    const knowledge = JSON.parse(localStorage.getItem('aiKnowledge') || '[]');
+    const container = document.getElementById('aiKnowledgeList');
+    container.innerHTML = knowledge.map((k, idx) => `<div class="config-card">📚 ${k}<button class="btn-danger btn-sm" style="float:right;" onclick="removeKnowledge(${idx})">Xóa</button></div>`).join('');
+    
+    // Load topics for fix
+    const select = document.getElementById('fixTopicSelect');
+    let allTopics = [];
+    for (const subject of currentSubjects) {
+      const topics = JSON.parse(localStorage.getItem(`${subject.id}Topics`) || '[]');
+      topics.forEach(t => allTopics.push({ subject: subject.name, title: t.title }));
+    }
+    select.innerHTML = allTopics.map(t => `<option value="${t.title}">${t.subject} - ${t.title}</option>`).join('');
+  }
+
+  function saveAIConfig() {
+    const config = {
+      systemPrompt: document.getElementById('aiSystemPrompt').value,
+      temperature: parseFloat(document.getElementById('aiTemperature').value),
+      maxTokens: parseInt(document.getElementById('aiMaxTokens').value)
+    };
+    localStorage.setItem('aiConfig', JSON.stringify(config));
+    showAlert('Đã lưu cấu hình AI!');
+  }
+
+  function fixAIResponse() {
+    const question = document.getElementById('wrongQuestion').value.trim();
+    const answer = document.getElementById('correctAnswer').value.trim();
+    const topic = document.getElementById('fixTopicSelect').value;
+    if (!question || !answer) { showAlert('Vui lòng nhập câu hỏi và câu trả lời đúng!', true); return; }
+    
+    const fixes = JSON.parse(localStorage.getItem('aiFixes') || '[]');
+    fixes.push({ question, answer, topic, date: new Date().toISOString() });
+    localStorage.setItem('aiFixes', JSON.stringify(fixes));
+    
+    document.getElementById('wrongQuestion').value = '';
+    document.getElementById('correctAnswer').value = '';
+    showAlert('Đã ghi nhận sửa lỗi AI! AI sẽ học từ câu trả lời này.');
+  }
+
+  function addAIKnowledge() {
+    const knowledge = document.getElementById('newKnowledge').value.trim();
+    if (!knowledge) { showAlert('Vui lòng nhập kiến thức!', true); return; }
+    const list = JSON.parse(localStorage.getItem('aiKnowledge') || '[]');
+    list.push(knowledge);
+    localStorage.setItem('aiKnowledge', JSON.stringify(list));
+    document.getElementById('newKnowledge').value = '';
+    loadAIConfig();
+    showAlert('Đã thêm kiến thức cho AI!');
+  }
+
+  function removeKnowledge(index) {
+    const list = JSON.parse(localStorage.getItem('aiKnowledge') || '[]');
+    list.splice(index, 1);
+    localStorage.setItem('aiKnowledge', JSON.stringify(list));
+    loadAIConfig();
+    showAlert('Đã xóa kiến thức!');
+  }
+
+  function refreshAllData() {
+    updateStats();
+    loadUsersList();
+    loadStructureTree();
+    loadChatHistory();
+    loadCharts();
+    loadAIConfig();
+    showAlert('Đã làm mới dữ liệu!');
+  }
+
+  function handleAdminLogout() {
+    logout();
+    window.location.href = 'trang chủ.html';
+  }
+
+  // Ghi nhận truy cập
+  function recordVisit() {
+    const visits = JSON.parse(localStorage.getItem('visitStats') || '[]');
+    visits.push({ date: new Date().toISOString(), userId: getCurrentUser()?.id });
+    localStorage.setItem('visitStats', JSON.stringify(visits.slice(-1000)));
+  }
+
+  // Khởi tạo
+  function init() {
+    if (!checkAdminAuth()) return;
+    if (!localStorage.getItem('subjects')) localStorage.setItem('subjects', JSON.stringify(currentSubjects));
+    else currentSubjects = JSON.parse(localStorage.getItem('subjects'));
+    
+    // Load select options
+    const userSelect = document.getElementById('chatUserFilter');
+    const users = getAllUsers();
+    userSelect.innerHTML = '<option value="all">Tất cả người dùng</option>' + users.map(u => `<option value="${u.id}">${u.fullname}</option>`).join('');
+    
+    const subjectSelect = document.getElementById('topicSubjectSelect');
+    subjectSelect.innerHTML = currentSubjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    
+    updateStats();
+    loadUsersList();
+    loadStructureTree();
+    loadChatHistory();
+    loadCharts();
+    loadAIConfig();
+    recordVisit();
+    
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        if (btn.dataset.tab === 'chat-history') loadChatHistory();
+        if (btn.dataset.tab === 'statistics') loadCharts();
+      });
+    });
+  }
+  
+  init();
+  window.deleteUserAccount = deleteUserAccount;
+  window.addNewSubject = addNewSubject;
+  window.addNewTopic = addNewTopic;
+  window.editTopicPrompt = editTopicPrompt;
+  window.deleteTopicItem = deleteTopicItem;
+  window.loadChatHistory = loadChatHistory;
+  window.saveAIConfig = saveAIConfig;
+  window.fixAIResponse = fixAIResponse;
+  window.addAIKnowledge = addAIKnowledge;
+  window.removeKnowledge = removeKnowledge;
+  window.refreshAllData = refreshAllData;
+  window.handleAdminLogout = handleAdminLogout;
+</script>
+</body>
+</html>

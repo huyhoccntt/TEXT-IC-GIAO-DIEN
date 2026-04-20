@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Bảng điều khiển | Trợ Lý Học Đường</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.3/dist/index.min.js"></script>
+  <style>
+    .dashboard-main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 32px;
+      padding: 32px 36px;
+      color: white;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .streak-badge {
+      background: rgba(255,255,255,0.15);
+      padding: 10px 20px;
+      border-radius: 60px;
+      font-weight: 600;
+    }
+
+    .stats-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .stat-box {
+      background: white;
+      border-radius: 28px;
+      padding: 24px;
+      border: 1px solid #edf2f7;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -12px rgba(0,0,0,0.1);
+    }
+
+    .stat-box h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #5b6e8c;
+      margin-bottom: 12px;
+    }
+
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 32px 0 20px;
+      color: #0f172a;
+    }
+
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .subject-card {
+      background: white;
+      border-radius: 28px;
+      padding: 24px;
+      border: 1px solid #eef2f6;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+      border-color: #2563eb;
+    }
+
+    .subject-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .subject-name {
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .subject-progress {
+      margin: 16px 0;
+    }
+
+    .progress-bar-bg {
+      background: #e2e8f0;
+      border-radius: 20px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: #2563eb;
+      width: 0%;
+      height: 100%;
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .subject-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    .status-good { background: #dcfce7; color: #15803d; }
+    .status-medium { background: #fef3c7; color: #b45309; }
+    .status-bad { background: #fee2e2; color: #b91c1c; }
+
+    /* AI Chat Widget */
+    .ai-chat-widget {
+      background: white;
+      border-radius: 32px;
+      border: 1px solid #eef2f6;
+      margin-bottom: 48px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .ai-chat-header {
+      background: linear-gradient(135deg, #4285f4 0%, #ea4335 50%, #fbbc04 100%);
+      padding: 20px 28px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .ai-chat-header h3 {
+      font-size: 1.2rem;
+      margin: 0;
+      flex: 1;
+    }
+
+    .ai-chat-status {
+      font-size: 0.7rem;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .ai-chat-status.gemini {
+      background: #10b981;
+      color: white;
+    }
+
+    .ai-chat-status.error {
+      background: #ef4444;
+      color: white;
+    }
+
+    .ai-chat-body {
+      display: none;
+      flex-direction: column;
+      height: 550px;
+    }
+
+    .ai-chat-body.open {
+      display: flex;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .message-avatar.ai {
+      background: linear-gradient(135deg, #4285f4, #ea4335);
+      color: white;
+    }
+
+    .message-avatar.user {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .message-content {
+      flex: 1;
+      background: white;
+      padding: 12px 16px;
+      border-radius: 20px;
+      border-top-left-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .message.user .message-content {
+      background: #2563eb;
+      color: white;
+      border-top-right-radius: 4px;
+      border-top-left-radius: 20px;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message.user .message-avatar {
+      margin-right: 0;
+      margin-left: 12px;
+    }
+
+    .message-time {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .message.user .message-time {
+      text-align: right;
+    }
+
+    .chat-input-area {
+      padding: 16px 20px;
+      background: white;
+      border-top: 1px solid #eef2f6;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chat-input-wrapper {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 40px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .chat-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    .upload-btn {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 40px;
+      padding: 0 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .chat-send-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chat-send-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
+    .image-preview {
+      margin-top: 12px;
+      padding: 12px;
+      background: #eef2ff;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .image-preview img {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .image-preview span {
+      font-size: 0.8rem;
+      color: #2563eb;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      background: white;
+      border-radius: 20px;
+      width: fit-content;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: #94a3b8;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    .ai-suggestion {
+      background: linear-gradient(145deg, #eef4ff, #ffffff);
+      border-radius: 32px;
+      padding: 28px;
+      border: 1px solid #d9e6ff;
+      margin-bottom: 48px;
+    }
+
+    .btn-action {
+      background: #2563eb;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .btn-action:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: #e0f2fe;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .logout-btn:hover {
+      color: #ef4444;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .study-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .study-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
+    .settings-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #e0f2fe;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+      margin-right: 16px;
+    }
+
+    .settings-link:hover {
+      color: #60a5fa;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-main { padding: 20px; }
+      .welcome-card { flex-direction: column; gap: 16px; text-align: center; }
+      .ai-chat-body { height: 450px; }
+      .chat-input-area { flex-direction: column; }
+      .chat-input-wrapper { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-inner">
+      <a href="trang chủ.html" class="brand">
+        <div class="brand-mark">H</div>
+        <div>Trợ Lý Học Đường</div>
+      </a>
+      <div class="user-menu">
+        <span id="userName" style="font-weight:500; color:#e0f2fe;"></span>
+        <div class="avatar" id="userAvatar"></div>
+        <a href="settings.html" class="settings-link">⚙️ Cài đặt</a>
+        <button onclick="handleLogout()" class="logout-btn">Đăng xuất</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="welcome-card">
+      <div class="welcome-text">
+        <h1 id="welcomeTitle">👋 Chào mừng!</h1>
+        <p id="welcomeMessage"></p>
+      </div>
+      <div class="streak-badge" id="streakBadge">🔥 Chuỗi học tập: 0 ngày</div>
+    </div>
+
+    <!-- Thống kê học tập -->
+    <div class="stats-dashboard" id="statsContainer"></div>
+
+    <!-- Thống kê câu sai và bài làm -->
+    <div class="stats-dashboard" id="mistakeStatsContainer"></div>
+
+    <h2 class="section-title">📚 Danh sách môn học</h2>
+    <div class="subjects-grid" id="subjectsContainer"></div>
+
+    <div class="ai-chat-widget">
+      <div class="ai-chat-header" onclick="toggleChat()">
+        <span style="font-size: 1.5rem;">🤖</span>
+        <h3>Trợ lý AI Gemini <span style="font-size:0.7rem;">by Google</span></h3>
+        <span class="ai-chat-status" id="aiStatus">● Đang kết nối...</span>
+        <span id="chatToggleIcon" style="font-size: 1.2rem;">▼</span>
+      </div>
+      <div class="ai-chat-body" id="chatBody">
+        <div class="chat-messages" id="chatMessages">
+          <div class="message ai">
+            <div class="message-avatar ai">🤖</div>
+            <div class="message-content">
+              Xin chào! Tôi là Gemini, trợ lý AI của Google.<br>
+              Tôi có thể giúp bạn:<br>
+              • 📖 Giải thích kiến thức Toán, Lý, Hóa, Anh<br>
+              • 🎯 Hướng dẫn giải bài tập chi tiết<br>
+              • 💡 Gợi ý phương pháp học tập hiệu quả<br>
+              • 📸 Đọc và phân tích ảnh bài tập<br>
+              • 📚 Tổng hợp lý thuyết theo yêu cầu<br><br>
+              Hãy hỏi tôi bất cứ điều gì bạn cần nhé!
+              <span class="message-time">Vừa xong</span>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-wrapper">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Nhập câu hỏi của bạn..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload()">
+            <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">📸 Chọn ảnh</button>
+            <button class="chat-send-btn" onclick="sendMessage()">Gửi ➤</button>
+          </div>
+          <div id="imagePreview" class="image-preview" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-suggestion" id="aiSuggestion">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; justify-content:space-between;">
+        <div>
+          <h3 style="margin-bottom:8px;">💡 Gợi ý từ AI</h3>
+          <p id="aiMessage">Đang phân tích dữ liệu học tập của bạn...</p>
+        </div>
+        <a href="#" class="btn-action" id="aiActionBtn">📖 Học ngay môn yếu</a>
+      </div>
+    </div>
+  </main>
+
+   <footer class="footer">
+      <div class="footer-container wow zoomIn">
+        <div class="footer-box">
+          <img src="https://i.pinimg.com/736x/76/d2/63/76d263ee4801280dd1332be35f609f49.jpg" alt="logo" class="footer-logo">
+          <h2 class="footer-title">Trợ Lý Học Đường</h2>
+          <div class="footer-contact" style="color: #9ecbff; line-height: 1.6; transition: color 0.3s ease;"
+               onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#9ecbff'">
+            SĐT: 0334299029<br>
+            Email: caphesua@gmail.com<br>
+            Địa chỉ: 123, QL6, Q8, HCMC
+          </div>
+        </div>
+
+        <div class="footer-box">
+          <h3 class="footer-heading">Liên kết</h3>
+          <ul>
+            <li><a href="trang chủ.html">Trang chủ</a></li>
+            <li><a href="login.html">Đăng nhập</a>
+            <li><a href="dashboard.html">Bảng điều khiển</a>
+            <li><a href="contact.html">Liên hệ</a>
+            <li><a href="login.html">Học thử ngay</a>
+          </ul>
+        </div>
+
+       
+        <div class="footer-box">
+          <h3 class="footer-heading">Điều hướng</h3>
+          <ul>
+            <li><a href="#features">Tính năng</a>
+            <li><a href="#impact">Tác động</a>
+            <li><a href="#ready">Bắt đầu học</a>
+          </ul>
+        </div>
+
+     
+        <div class="footer-box">
+          <img src="https://i.imgur.com/ZxUFFwu.jpg" alt="Resources Image" class="footer-image">
+        </div>
+
+      </div>
+    </footer>
+
+    <style>
+      .footer {
+        background-color: #0e1c2f;
+        padding: 60px 0 20px 0;
+      }
+
+      .footer-container {
+        background-color: #182b47;
+        border-radius: 20px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+        color: #f5f6fa;
+      }
+
+      .footer-box img.footer-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-image {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .footer-heading {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff !important;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 15px;
+      }
+
+      .footer-heading::before {
+        content: "•";
+        color: #ffffff;
+        font-size: 22px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+      }
+
+      .footer-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-box ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-box a {
+        color: #9ecbff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-box a:hover {
+        color: #00bcd4;
+      }
+
+ 
+      .footer-box,
+      .footer-box ul,
+      .footer-box .footer-contact {
+        text-align: left;
+      }
+
+      @media (max-width: 768px) {
+        .footer-container {
+          padding: 30px;
+        }
+      }
+    </style>
+    </footer>
+</div>
+
+<script src="auth.js"></script>
+<script src="ai-assistant.js"></script>
+<script>
+  // ========== CẤU HÌNH GEMINI AI ==========
+  const GEMINI_API_KEY = "AIzaSyCfj3eEipM26W0WjiWYanZSrTvQ64UUrjE";
+  
+  let genAI = null;
+  let model = null;
+  let isGeminiReady = false;
+  let initAttempts = 0;
+  let currentImageData = null;
+
+  // Khởi tạo Gemini
+  async function initGemini() {
+    const statusSpan = document.getElementById('aiStatus');
+    
+    try {
+      if (typeof GoogleGenerativeAI === 'undefined') {
+        initAttempts++;
+        if (initAttempts < 10) {
+          setTimeout(initGemini, 500);
+        } else {
+          statusSpan.innerHTML = '● SDK lỗi';
+          statusSpan.className = 'ai-chat-status error';
+          isGeminiReady = false;
+        }
+        return;
+      }
+      
+      genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        generationConfig: {
+          temperature: 0.7,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 2048,
+        },
+      });
+      
+      const testResult = await model.generateContent("Nói 'Xin chào'");
+      await testResult.response;
+      
+      isGeminiReady = true;
+      statusSpan.innerHTML = '● Sẵn sàng';
+      statusSpan.className = 'ai-chat-status gemini';
+      console.log('✅ Gemini AI đã sẵn sàng!');
+      
+      addMessage('✅ Đã kết nối thành công với Gemini AI! Tôi có thể giúp gì cho bạn?', false);
+      
+    } catch (error) {
+      console.error('Lỗi khởi tạo Gemini:', error);
+      statusSpan.innerHTML = '● Lỗi API';
+      statusSpan.className = 'ai-chat-status error';
+      isGeminiReady = false;
+      addMessage('⚠️ Không thể kết nối đến Gemini AI. Vui lòng kiểm tra API Key hoặc kết nối mạng. Tuy nhiên, tôi vẫn có thể trả lời các câu hỏi cơ bản về học tập!', false);
+    }
+  }
+
+  // Xử lý upload ảnh
+  function handleImageUpload() {
+    const file = document.getElementById('imageUpload').files[0];
+    if (!file) return;
+    
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ảnh quá lớn! Vui lòng chọn ảnh dưới 5MB');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      currentImageData = e.target.result;
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = `
+        <img src="${currentImageData}" alt="Preview">
+        <span>Đã chọn ảnh: ${file.name}</span>
+        <button onclick="clearImage()" style="background:none; border:none; color:#ef4444; cursor:pointer;">✖️ Xóa</button>
+      `;
+      preview.style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearImage() {
+    currentImageData = null;
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('imageUpload').value = '';
+  }
+
+  // AI Dự phòng
+  function getFallbackResponse(question) {
+    const lowerQuestion = question.toLowerCase();
+    
+    const responses = {
+      "chào": "Xin chào! Tôi là trợ lý AI của Trợ Lý Học Đường. Rất vui được gặp bạn! 😊",
+      "hi": "Hi there! Chào bạn, tôi có thể giúp gì cho bạn hôm nay?",
+      "cảm ơn": "Rất vui được giúp bạn! Chúc bạn học tốt! 🎓",
+      "công thức lượng giác": "📐 Công thức lượng giác:\n• sin²a + cos²a = 1\n• sin2a = 2sina.cosa\n• cos2a = cos²a - sin²a = 2cos²a - 1 = 1 - 2sin²a",
+      "đạo hàm": "📈 Công thức đạo hàm:\n• (xⁿ)' = n.xⁿ⁻¹\n• (sinx)' = cosx\n• (cosx)' = -sinx\n• (eˣ)' = eˣ\n• (lnx)' = 1/x",
+      "tích phân": "∫ Công thức tích phân:\n• ∫xⁿdx = xⁿ⁺¹/(n+1) + C\n• ∫1/x dx = ln|x| + C\n• ∫sinx dx = -cosx + C\n• ∫cosx dx = sinx + C",
+      "cách học": "🎯 Phương pháp học hiệu quả:\n• Pomodoro: Học 25 phút, nghỉ 5 phút\n• Ghi chép bằng sơ đồ tư duy\n• Ôn tập đều đặn mỗi ngày\n• Làm nhiều bài tập thực hành"
+    };
+    
+    for (const [key, value] of Object.entries(responses)) {
+      if (lowerQuestion.includes(key)) {
+        return value;
+      }
+    }
+    
+    return "📚 Cảm ơn bạn đã đặt câu hỏi! Tôi đang học hỏi thêm mỗi ngày. Bạn có thể hỏi tôi về công thức Toán, Lý, Hóa hoặc phương pháp học tập nhé!";
+  }
+
+  // Gửi câu hỏi đến Gemini
+  async function askGemini(question, imageData = null) {
+    if (!isGeminiReady || !model) {
+      if (!isGeminiReady) {
+        await initGemini();
+      }
+      if (!isGeminiReady) {
+        return getFallbackResponse(question);
+      }
+    }
+
+    try {
+      let prompt = `Bạn là trợ lý AI chuyên về giáo dục cho học sinh THPT. Hãy trả lời câu hỏi sau một cách chính xác, dễ hiểu, có ví dụ minh họa nếu cần. Hãy trả lời bằng tiếng Việt. Câu hỏi: ${question}`;
+      
+      let result;
+      if (imageData) {
+        const imageParts = [{
+          inlineData: {
+            data: imageData.split(',')[1],
+            mimeType: "image/jpeg"
+          }
+        }];
+        result = await model.generateContent([prompt, ...imageParts]);
+      } else {
+        result = await model.generateContent(prompt);
+      }
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error('Lỗi gọi Gemini API:', error);
+      return getFallbackResponse(question);
+    }
+  }
+
+  // ========== CHAT FUNCTIONS ==========
+  function toggleChat() {
+    const body = document.getElementById('chatBody');
+    const icon = document.getElementById('chatToggleIcon');
+    body.classList.toggle('open');
+    icon.textContent = body.classList.contains('open') ? '▲' : '▼';
+  }
+
+  function addMessage(text, isUser = false) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const time = new Date().toLocaleTimeString();
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+    messageDiv.innerHTML = `
+      <div class="message-avatar ${isUser ? 'user' : 'ai'}">${isUser ? '👤' : '🤖'}</div>
+      <div class="message-content">
+        ${text.replace(/\n/g, '<br>')}
+        <span class="message-time">${time}</span>
+      </div>
+    `;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function showTypingIndicator() {
+    const messagesDiv = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message ai';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+      <div class="message-avatar ai">🤖</div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    `;
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) indicator.remove();
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const question = input.value.trim();
+    if (!question && !currentImageData) return;
+    
+    let displayMessage = question;
+    if (currentImageData) {
+      displayMessage = question ? `${question} [có kèm ảnh]` : '[Đã gửi kèm ảnh bài tập]';
+    }
+    addMessage(displayMessage, true);
+    input.value = '';
+    
+    showTypingIndicator();
+    
+    const answer = await askGemini(question || "Hãy phân tích ảnh bài tập này và hướng dẫn giải", currentImageData);
+    
+    removeTypingIndicator();
+    addMessage(answer, false);
+    
+    // Lưu lịch sử chat
+    const user = getCurrentUser();
+    const allChats = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    allChats.push({
+      userId: user.id,
+      userName: user.fullname,
+      question: question || "Phân tích ảnh bài tập",
+      answer: answer,
+      hasImage: !!currentImageData,
+      date: new Date().toDateString(),
+      time: new Date().toLocaleTimeString(),
+      ai: isGeminiReady ? 'Gemini' : 'Fallback'
+    });
+    localStorage.setItem('chatHistory', JSON.stringify(allChats.slice(-200)));
+    
+    clearImage();
+  }
+
+  // ========== DASHBOARD FUNCTIONS ==========
+  const subjectsList = [
+    { id: "toan10", name: "Toán 10", icon: "📐", color: "#3b82f6" },
+    { id: "toan11", name: "Toán 11", icon: "📏", color: "#8b5cf6" },
+    { id: "toan12", name: "Toán 12", icon: "📊", color: "#ef4444" },
+    { id: "ly10", name: "Vật Lý 10", icon: "⚡", color: "#10b981" },
+    { id: "hoa10", name: "Hóa Học 10", icon: "🧪", color: "#06b6d4" },
+    { id: "anh10", name: "Tiếng Anh 10", icon: "🇬🇧", color: "#ec4898" }
+  ];
+
+  function checkAuth() {
+    if (typeof isLoggedIn !== 'undefined' && !isLoggedIn()) {
+      window.location.href = 'login.html';
+      return false;
+    }
+    return true;
+  }
+
+  function displayUserInfo() {
+    const user = getCurrentUser();
+    if (user) {
+      document.getElementById('userName').textContent = user.fullname;
+      const avatarUrl = getUserAvatar(user.id);
+      const avatarDiv = document.getElementById('userAvatar');
+      if (avatarUrl && avatarDiv) {
+        avatarDiv.style.backgroundImage = `url(${avatarUrl})`;
+        avatarDiv.style.backgroundSize = 'cover';
+        avatarDiv.style.backgroundPosition = 'center';
+        avatarDiv.textContent = '';
+      } else if (avatarDiv) {
+        avatarDiv.textContent = user.avatar;
+      }
+      document.getElementById('welcomeTitle').innerHTML = `👋 Chào mừng, ${user.fullname.split(' ').pop()}!`;
+      document.getElementById('welcomeMessage').innerHTML = `Hôm nay là ngày tuyệt vời để bứt phá điểm số. Lớp ${user.grade}`;
+      document.getElementById('streakBadge').innerHTML = `🔥 Chuỗi học tập: ${user.stats?.streak || 0} ngày`;
+    }
+  }
+
+  function displayStats() {
+    const user = getCurrentUser();
+    if (user) {
+      const stats = user.stats || { totalStudyHours: 0, completedLessons: 0, averageScore: 0, streak: 0 };
+      document.getElementById('statsContainer').innerHTML = `
+        <div class="stat-box"><h3>📚 Giờ học</h3><div class="stat-number">${stats.totalStudyHours || 0}h</div><span>Đã học</span></div>
+        <div class="stat-box"><h3>✅ Câu hỏi đã làm</h3><div class="stat-number">${stats.completedLessons || 0}</div><span>câu trắc nghiệm</span></div>
+        <div class="stat-box"><h3>🎯 Điểm TB</h3><div class="stat-number">${stats.averageScore || 0}</div><span>/10</span></div>
+        <div class="stat-box"><h3>🔥 Chuỗi học</h3><div class="stat-number">${stats.streak || 0}</div><span>ngày liên tiếp</span></div>
+      `;
+    }
+  }
+
+  function loadMistakeStats() {
+    const mistakeStats = JSON.parse(localStorage.getItem('mistakeStats') || '[]');
+    const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+    const user = getCurrentUser();
+    
+    const userMistakes = mistakeStats.filter(m => m.userId === user.id);
+    const userQuizzes = quizHistory.filter(q => q.userId === user.id);
+    
+    const totalMistakes = userMistakes.length;
+    const totalQuizzes = userQuizzes.length;
+    
+    let avgScore = 0;
+    let avgTime = 0;
+    
+    if (userQuizzes.length > 0) {
+      avgScore = userQuizzes.reduce((sum, q) => sum + q.score, 0) / userQuizzes.length;
+      const avgTimeSec = userQuizzes.reduce((sum, q) => sum + (q.timeSpent || 0), 0) / userQuizzes.length;
+      avgTime = Math.round(avgTimeSec / 60);
+    }
+    
+    document.getElementById('mistakeStatsContainer').innerHTML = `
+      <div class="stat-box"><h3>❌ Tổng câu sai</h3><div class="stat-number">${totalMistakes}</div><span>Từ tất cả bài kiểm tra</span></div>
+      <div class="stat-box"><h3>⏱️ TB mỗi bài</h3><div class="stat-number">${avgTime}</div><span>phút/bài</span></div>
+      <div class="stat-box"><h3>📊 Điểm TB</h3><div class="stat-number">${avgScore.toFixed(1)}</div><span>/10</span></div>
+      <div class="stat-box"><h3>📚 Số bài đã làm</h3><div class="stat-number">${totalQuizzes}</div><span>bài kiểm tra</span></div>
+    `;
+  }
+
+  function getSubjectProgress(subjectId) {
+    const user = getCurrentUser();
+    if (!user) return 0;
+    const stats = user.stats || { subjects: {} };
+    const subjects = stats.subjects || {};
+    const progressMap = { 
+      'toan10': 'math', 'toan11': 'math11', 'toan12': 'math12',
+      'ly10': 'physics', 'hoa10': 'chemistry', 'anh10': 'english'
+    };
+    const key = progressMap[subjectId];
+    return subjects[key]?.progress || 0;
+  }
+
+  function getSubjectStatus(progress) {
+    if (progress >= 80) return { class: 'status-good', text: 'Thành thạo' };
+    if (progress >= 40) return { class: 'status-medium', text: 'Đang tiến bộ' };
+    if (progress > 0) return { class: 'status-bad', text: 'Cần cố gắng' };
+    return { class: 'status-bad', text: 'Chưa bắt đầu' };
+  }
+
+  function displaySubjects() {
+    const container = document.getElementById('subjectsContainer');
+    container.innerHTML = subjectsList.map(subject => {
+      const progress = getSubjectProgress(subject.id);
+      const status = getSubjectStatus(progress);
+      return `
+        <div class="subject-card">
+          <div class="subject-icon">${subject.icon}</div>
+          <div class="subject-name">${subject.name}</div>
+          <div class="subject-progress">
+            <div class="progress-bar-bg"><div class="progress-fill" style="width:${progress}%; background:${subject.color};"></div></div>
+            <span class="progress-text">Tiến độ: ${progress}%</span>
+          </div>
+          <span class="subject-status ${status.class}">${status.text}</span>
+          <button class="study-btn" onclick="goToStudy('${subject.id}', '${subject.name}')">📖 Học ngay</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.goToStudy = function(subjectId, subjectName) {
+    localStorage.setItem('selectedSubject', JSON.stringify({ id: subjectId, name: subjectName }));
+    window.location.href = 'hoc-tap.html';
+  }
+
+  function getWeakestSubject() {
+    const subjects = subjectsList.map(s => ({ id: s.id, name: s.name, progress: getSubjectProgress(s.id) }));
+    subjects.sort((a, b) => a.progress - b.progress);
+    return subjects[0];
+  }
+
+  function displayAISuggestion() {
+    const weakest = getWeakestSubject();
+    if (weakest && weakest.progress < 50) {
+      document.getElementById('aiMessage').innerHTML = `🔍 Bạn còn yếu ở môn <strong>${weakest.name}</strong> (${weakest.progress}%). Hãy ôn tập ngay!`;
+      document.getElementById('aiActionBtn').onclick = () => goToStudy(weakest.id, weakest.name);
+    } else if (weakest && weakest.progress < 80) {
+      document.getElementById('aiMessage').innerHTML = `📈 Bạn đang tiến bộ tốt! Hãy tiếp tục duy trì.`;
+    } else {
+      document.getElementById('aiMessage').innerHTML = `🎉 Tuyệt vời! Bạn đã đạt tiến độ tốt.`;
+    }
+  }
+
+  function handleLogout() { 
+    logout(); 
+    window.location.href = 'trang chủ.html'; 
+  }
+
+  // Khởi tạo
+  async function init() {
+    if (!checkAuth()) return;
+    displayUserInfo();
+    displayStats();
+    loadMistakeStats();
+    displaySubjects();
+    displayAISuggestion();
+    await initGemini();
+  }
+
+  init();
+  window.handleLogout = handleLogout;
+  window.sendMessage = sendMessage;
+  window.toggleChat = toggleChat;
+  window.handleImageUpload = handleImageUpload;
+  window.clearImage = clearImage;
+</script>
+</body>
+</html>

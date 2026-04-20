@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Liên hệ | Trợ Lý Học Đường</title>
+  <meta name="description" content="Liên hệ với đội ngũ Trợ Lý Học Đường để được tư vấn giải pháp AI cá nhân hóa cho học sinh THPT." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .contact-hero {
+      background: linear-gradient(145deg, #f8fafc, #ffffff);
+      border-bottom: 1px solid #eef2f6;
+    }
+    .contact-hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 56px 32px 48px;
+      text-align: center;
+    }
+    .contact-hero-badge {
+      display: inline-block;
+      background: #eef4ff;
+      color: #1e40af;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 40px;
+      margin-bottom: 20px;
+    }
+    .contact-hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      margin-bottom: 20px;
+    }
+
+    .contact-hero p {
+      font-size: 1.1rem;
+      color: #475569;
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .contact-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 72px 32px 96px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+    .info-section h2, .form-section h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+      color: #0f172a;
+    }
+
+    .info-section p {
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-bottom: 48px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      background: #f9fafc;
+      padding: 20px 24px;
+      border-radius: 28px;
+      border: 1px solid #edf2f7;
+      transition: all 0.2s;
+    }
+
+    .contact-item:hover {
+      background: #ffffff;
+      border-color: #d9e6ff;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .contact-icon {
+      width: 52px;
+      height: 52px;
+      background: #eef2ff;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      flex-shrink: 0;
+    }
+
+    .contact-text h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .contact-text p, .contact-text a {
+      color: #475569;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+      line-height: 1.5;
+    }
+
+    .contact-text a:hover {
+      color: #2563eb;
+    }
+
+    .social-links {
+      margin-top: 20px;
+    }
+
+    .social-links h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #0f172a;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .social-icon {
+      background: #f1f5f9;
+      width: 48px;
+      height: 48px;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      text-decoration: none;
+      color: #1e293b;
+      transition: all 0.2s;
+      border: 1px solid #e2e8f0;
+    }
+
+    .social-icon:hover {
+      background: #2563eb;
+      color: white;
+      transform: translateY(-3px);
+      border-color: #2563eb;
+    }
+
+    .form-card {
+      background: #ffffff;
+      border-radius: 40px;
+      padding: 40px;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      border: 1px solid #edf2f7;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 24px;
+      background: #fefefe;
+      transition: all 0.2s;
+      outline: none;
+      color: #0f172a;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .btn-submit {
+      background: #0f172a;
+      color: white;
+      width: 100%;
+      padding: 14px 24px;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 44px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.3);
+    }
+
+    .alert-message {
+      background: #dcfce7;
+      color: #15803d;
+      padding: 14px 20px;
+      border-radius: 28px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      display: none;
+      font-size: 0.9rem;
+      border-left: 4px solid #22c55e;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-left-color: #ef4444;
+    }
+    .map-placeholder {
+      background: linear-gradient(135deg, #f1f5f9, #eef2ff);
+      border-radius: 32px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+      font-weight: 500;
+      margin-top: 32px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .contact-hero h1 {
+        font-size: 2.2rem;
+      }
+      .contact-content {
+        padding: 48px 24px 72px;
+      }
+      .form-card {
+        padding: 28px;
+      }
+      .info-section h2, .form-section h2 {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .contact-item {
+        padding: 16px 20px;
+      }
+      .contact-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.4rem;
+      }
+      .btn-submit {
+        padding: 12px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">H</div>
+        <div>Trợ Lý Học Đường</div>
+      </div>
+      <nav class="nav">
+        <a href="trang chủ.html#features">Tính năng</a>
+        <a href="trang chủ.html#impact">Tác động</a>
+        <a href="trang chủ.html#ready">Bắt đầu học</a>
+        <a href="contact.html" style="color:#60a5fa;">Liên hệ</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="link-button">Đăng nhập</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">Học thử ngay</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="contact-hero">
+      <div class="contact-hero-inner">
+        <div class="contact-hero-badge">📬 Kết nối với đội ngũ AI</div>
+        <h1>Chúng tôi luôn sẵn sàng hỗ trợ bạn</h1>
+        <p>Mọi thắc mắc về giải pháp học tập, hợp tác hoặc góp ý — hãy liên hệ ngay để được tư vấn tận tình từ đội ngũ Trợ Lý Học Đường.</p>
+      </div>
+    </div>
+
+    <div class="contact-content">
+      <div class="contact-grid">
+        <div class="info-section">
+          <h2>💬 Trò chuyện cùng chúng tôi</h2>
+          <p>Đội ngũ hỗ trợ học tập 24/7 luôn sẵn lòng giải đáp mọi câu hỏi của bạn và phụ huynh về lộ trình AI cá nhân hóa.</p>
+          <div class="contact-details">
+            <div class="contact-item">
+              <div class="contact-icon">📍</div>
+              <div class="contact-text">
+                <h3>Văn phòng chính</h3>
+                <p>Tầng 8, Tòa nhà EdTech, 125 Trần Hưng Đạo, Quận 1, TP. Hồ Chí Minh</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📞</div>
+              <div class="contact-text">
+                <h3>Hotline tư vấn</h3>
+                <p><a href="tel:0334299029">0334 299 029</a> (8:00 - 21:00 hàng ngày)</p>
+                <p style="margin-top:4px;"><a href="tel:0334299029">0334 299 029</a> (Hỗ trợ kỹ thuật AI)</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">✉️</div>
+              <div class="contact-text">
+                <h3>Email chính thức</h3>
+                <p><a href="mailto:trolyhocduong@gmail.com">trolyhocduong@gmail.com</a></p>
+                <p><a href="mailto:hotro@trolyhocduong.vn">hotro@trolyhocduong.vn</a> (phản hồi trong 2h)</p>
+              </div>
+            </div>
+          </div>
+          <div class="social-links">
+            <h3>📱 Kết nối cộng đồng</h3>
+            <div class="social-icons">
+              <a href="#" class="social-icon">📘</a>
+              <a href="#" class="social-icon">📷</a>
+              <a href="#" class="social-icon">🎵</a>
+              <a href="#" class="social-icon">💬</a>
+              <a href="#" class="social-icon">▶️</a>
+            </div>
+          </div>
+          <div class="map-placeholder">
+            🗺️ Xem bản đồ tương tác | Trụ sở chính tại TP.HCM
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-card">
+            <h2 style="margin-bottom: 12px;">📩 Gửi tin nhắn</h2>
+            <p style="color:#475569; margin-bottom: 28px; font-size:0.95rem;">Điền thông tin bên dưới, đội ngũ chuyên môn sẽ phản hồi trong vòng 24 giờ.</p>
+            <div id="formAlert" class="alert-message"></div>
+            <form id="contactForm">
+              <div class="form-group">
+                <label>Họ và tên *</label>
+                <input type="text" id="fullName" placeholder="VD: Nguyễn Minh Anh" required>
+              </div>
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="email" placeholder="ban@example.com" required>
+              </div>
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="tel" id="phone" placeholder="090 123 4567">
+              </div>
+              <div class="form-group">
+                <label>Bạn là *</label>
+                <select id="roleSelect">
+                  <option value="student">Học sinh THPT</option>
+                  <option value="parent">Phụ huynh</option>
+                  <option value="teacher">Giáo viên / Trường học</option>
+                  <option value="partner">Đối tác / Truyền thông</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nội dung *</label>
+                <textarea id="message" placeholder="Nhập câu hỏi hoặc góp ý của bạn về nền tảng AI, lộ trình học tập, hợp tác,..."></textarea>
+              </div>
+              <button type="submit" class="btn-submit">✨ Gửi liên hệ ngay</button>
+            </form>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-top: 24px; text-align:center;">Thông tin của bạn được bảo mật tuyệt đối, chỉ dùng để hỗ trợ học tập.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<footer class="footer">
+      <div class="footer-container wow zoomIn">
+        <div class="footer-box">
+          <img src="https://i.pinimg.com/736x/76/d2/63/76d263ee4801280dd1332be35f609f49.jpg" alt="logo" class="footer-logo">
+          <h2 class="footer-title">Trợ Lý Học Đường</h2>
+          <div class="footer-contact" style="color: #9ecbff; line-height: 1.6; transition: color 0.3s ease;"
+               onmouseover="this.style.color='#00bcd4'" onmouseout="this.style.color='#9ecbff'">
+            SĐT: 0334299029<br>
+            Email: caphesua@gmail.com<br>
+            Địa chỉ: 123, QL6, Q8, HCMC
+          </div>
+        </div>
+
+        <div class="footer-box">
+          <h3 class="footer-heading">Liên kết</h3>
+          <ul>
+            <li><a href="trang chủ.html">Trang chủ</a></li>
+            <li><a href="login.html">Đăng nhập</a>
+            <li><a href="dashboard.html">Bảng điều khiển</a>
+            <li><a href="contact.html">Liên hệ</a>
+            <li><a href="login.html">Học thử ngay</a>
+          </ul>
+        </div>
+
+       
+        <div class="footer-box">
+          <h3 class="footer-heading">Điều hướng</h3>
+          <ul>
+            <li><a href="#features">Tính năng</a>
+            <li><a href="#impact">Tác động</a>
+            <li><a href="#ready">Bắt đầu học</a>
+          </ul>
+        </div>
+
+     
+        <div class="footer-box">
+          <img src="https://i.imgur.com/ZxUFFwu.jpg" alt="Resources Image" class="footer-image">
+        </div>
+
+      </div>
+    </footer>
+
+    <style>
+      .footer {
+        background-color: #0e1c2f;
+        padding: 60px 0 20px 0;
+      }
+
+      .footer-container {
+        background-color: #182b47;
+        border-radius: 20px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+        color: #f5f6fa;
+      }
+
+      .footer-box img.footer-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-image {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      }
+
+      .footer-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .footer-heading {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff !important;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 15px;
+      }
+
+      .footer-heading::before {
+        content: "•";
+        color: #ffffff;
+        font-size: 22px;
+        position: absolute;
+        left: 0;
+        top: -2px;
+      }
+
+      .footer-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-box ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-box a {
+        color: #9ecbff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-box a:hover {
+        color: #00bcd4;
+      }
+
+ 
+      .footer-box,
+      .footer-box ul,
+      .footer-box .footer-contact {
+        text-align: left;
+      }
+
+      @media (max-width: 768px) {
+        .footer-container {
+          padding: 30px;
+        }
+      }
+    </style>
+    </footer>
+</div>
+
+<script>
+  (function() {
+    const form = document.getElementById('contactForm');
+    const alertDiv = document.getElementById('formAlert');
+
+    function showAlert(message, isError = false) {
+      alertDiv.textContent = message;
+      alertDiv.style.display = 'block';
+      if (isError) {
+        alertDiv.classList.add('alert-error');
+      } else {
+        alertDiv.classList.remove('alert-error');
+      }
+      setTimeout(() => {
+        alertDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const role = document.getElementById('roleSelect').value;
+      const messageText = document.getElementById('message').value.trim();
+
+      if (!fullName) {
+        showAlert('❌ Vui lòng nhập họ và tên.', true);
+        return;
+      }
+      if (!email) {
+        showAlert('❌ Vui lòng nhập email để chúng tôi phản hồi.', true);
+        return;
+      }
+      const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        showAlert('⚠️ Email không hợp lệ. Vui lòng kiểm tra lại.', true);
+        return;
+      }
+      if (!messageText) {
+        showAlert('📝 Vui lòng nhập nội dung cần hỗ trợ.', true);
+        return;
+      }
+      if (messageText.length < 5) {
+        showAlert('✏️ Nội dung nên dài hơn một chút để chúng tôi hiểu rõ vấn đề của bạn.', true);
+        return;
+      }
+
+      const contactData = {
+        fullName,
+        email,
+        phone,
+        role,
+        message: messageText,
+        timestamp: new Date().toISOString()
+      };
+      console.log('📬 Dữ liệu liên hệ:', contactData);
+
+      showAlert('✅ Gửi liên hệ thành công! Đội ngũ Trợ Lý Học Đường sẽ phản hồi bạn trong thời gian sớm nhất.', false);
+      form.reset();
+    }
+
+    form.addEventListener('submit', handleSubmit);
+  })();
+</script>
+</body>
+</html>
